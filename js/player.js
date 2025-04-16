@@ -22,6 +22,7 @@ export class Ship extends Object {
     update() {
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
+        this.draw()
     }
 
     draw() {
