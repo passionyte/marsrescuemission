@@ -2,8 +2,14 @@ body {
     background-color: gray;
 }
 
+.centered {
+    display: flex;
+    align-items: center; /* Vertically center */
+    justify-content: center; /* Horizontally center */
+    width: 100vw;
+    height: 100vh;
+  }
+
 canvas {
-    width: 600px;
-    height: 800px;
     background-color: white
 }
