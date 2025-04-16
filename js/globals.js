@@ -2,7 +2,7 @@ export const CANVAS = d("canvas")
 export const CTX = CANVAS.getContext("2d")
 
 export const FPS = 60
-export const DEBUG = true
+export const DEBUG = false
 export const MS_PER_FRAME = (1000 / FPS)
 
 export class Object {
@@ -22,11 +22,11 @@ export class Object {
     }
 
     get width() {
-        return this.size.w
+        return (this.size.w / this.scale)
     }
 
     get height() {
-        return this.size.h
+        return (this.size.h / this.scale)
     }
 
     get top() {
@@ -34,22 +34,29 @@ export class Object {
     }
 
     get bottom() {
-        return (this.position.y + this.img.height)
+        return (this.position.y + (this.height / 2))
     }
 
     get left() {
-        return this.position.x
+        return (this.position.x - (this.width / 2))
     }
 
     get right() {
-        return (this.position.x + this.img.width)
+        return (this.left + this.width)
     }
 
-    constructor(x, y, w, h) {
+    draw() {
+        CTX.fillStyle = "red"
+        CTX.fillRect(this.left, this.top, this.width, this.height)
+    }
+
+    constructor(x, y, w, h, scale = 1) {
         this.position.x = x
         this.position.y = y
         this.size.w = w
         this.size.h = h
+
+        this.scale = scale
     }
 }
 
@@ -83,6 +90,10 @@ export function newImg(src) {
     i.src = src || "../images/en_generic.png"
 
     return i
+}
+
+export function clearCanvas() {
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height)
 }
 
 export default { CANVAS, CTX } 

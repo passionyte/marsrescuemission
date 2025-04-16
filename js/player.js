@@ -1,7 +1,18 @@
-import { CTX, newImg, Object, CANVAS } from "./globals.js"
+import { CTX, newImg, Object, CANVAS, DEBUG } from "./globals.js"
 import { Projectile, Projectiles } from "./projectile.js"
 
 export const Enemies = []
+export const enemyClasses = {
+    generic: {
+        w: 645,
+        h: 456,
+        hp: 1,                                  
+        xs: 1,
+        ys: 1,
+        scale: 8
+    },
+
+}
 
 export class Ship extends Object {
     img
@@ -17,6 +28,7 @@ export class Ship extends Object {
 
         const p = new Projectile(this.position.x, (this.position.y + ((this.sdata.inverted) && -25) || 25), 6, 12, this.sdata.time, this.sdata.color, this.sdata.damage)
         p.velocity.y = ((this.sdata.inverted) && -this.sdata.speed) || this.sdata.speed
+        p.player = (this.type == "Player")
 
         Projectiles.push(p)
     }
@@ -27,24 +39,43 @@ export class Ship extends Object {
         const nx = (this.position.x + this.velocity.x)
         const ny  = (this.position.y + this.velocity.y)
 
-        if (nx >= CANVAS.width  || nx <= 0 || ny >= CANVAS.height || ny <= 0) return
+        const w = (this.width / 2)
+        const h = (this.height / 2)
+
+        if (nx >= (CANVAS.width - w) || nx <= w || ny >= (CANVAS.height - h) || ny <= h) {
+            if (this.type != "Player") {
+                if (this.varspeed) {
+                    this.varspeed *= -1
+                }
+            }
+
+            return
+        }
 
         this.position.x = nx
         this.position.y = ny
     }
 
     draw() {
-        CTX.drawImage(this.img, 0, 0, this.width, this.height, (this.left - (this.width / 8)), this.top, (this.width / 4), (this.height / 4))
+        if (DEBUG) {
+            super.draw()
+        }
+
+        CTX.drawImage(this.img, 0, 0, this.size.w, this.size.h, this.left, this.top, this.width, this.height)
     }
 
-    constructor(x, y, w, h, hp, xs, ys, sdata, src) {
-        super(x, y, w, h)
+    constructor(type, x, y, w, h, hp, xs, ys, sdata, scale, src) {
+        super(x, y, w, h, scale)
+
+        this.type = type
         this.hp = hp
 
         this.xspeed = xs
         this.yspeed = ys
         this.sdata = sdata
-        this.img = newImg(src)
+
+        this.scale = scale
+        this.img = newImg(src || `../images/en_${type}.png`)
     }
 }
 
@@ -59,7 +90,7 @@ export class Player extends Ship {
             damage: 1
         }
 
-        super(x, y, w, h, hp, 5, 0, sdata, "../images/ship.png")
+        super("Player", x, y, w, h, hp, 5, 0, sdata, 4, "../images/ship.png")
     }
 }
 
