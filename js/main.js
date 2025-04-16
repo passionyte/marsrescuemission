@@ -1,7 +1,7 @@
 'use strict'
 
-import { DEBUG, MS_PER_FRAME, CANVAS, CTX, keyClasses } from "./globals.js"
-import { Ship, Player } from "./player.js"
+import { DEBUG, MS_PER_FRAME, CANVAS, CTX, keyClasses, randInt, KEYS } from "./globals.js"
+import { Ship, Player, Enemies } from "./player.js"
 import { Projectiles } from "./projectile.js"
 
 // Variables
@@ -22,8 +22,13 @@ function input() {
         downKeys[key] = true
 
         if (keyClasses.shoot.includes(key)) {
-            console.log("attempting shot")
             HERO.shoot()
+        }
+        else if (keyClasses.left.includes(key)) {
+            HERO.velocity.x = -HERO.xspeed
+        }
+        else if (keyClasses.right.includes(key)) {
+            HERO.velocity.x = HERO.xspeed
         }
     })
 
@@ -33,6 +38,10 @@ function input() {
         if (!downKeys[key]) return
 
         downKeys[key] = false
+
+        if ((keyClasses.left.includes(key) || keyClasses.right.includes(key))) {
+            HERO.velocity.x = 0
+        }
     })
 }
 
@@ -50,31 +59,63 @@ function update() {
     // Clear the canvas
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height)
 
-    console.log(TIME_PASSED)
-
     // create bad guys
 
+    if (randInt(1, 100) == 1) {
+        console.log('creating guy')
+        const t = new Ship(randInt(100, CANVAS.width - 100), randInt(50, 200), 645, 456, 1, {
+            color: "green",
+            life: 3,
+            damage: 1,
+            speed: 4
+        }, "..images/en_generic.png") 
+
+        Enemies.push(t)
+    } 
+
+    // handle bad guys
+
+    let ei = 0
+    for (const e of Enemies) {
+        if (e.hp <= 0) {
+            Enemies.splice(ei, 1)
+        }
+        else {
+            e.update()
+
+            if (e.sdata && randInt(1, (20 * e.sdata.cooldown)) == 1) {
+                e.shoot()
+            }
+        }
+        
+        ei++
+    }
 
     // handle projectiles
-    let i = 0
+    let pi = 0
     for (const p of Projectiles) {
-        if ((NOW - p.time) < p.life) {
+        if ((NOW - p.time) < (p.life * 1000)) {
             p.update()
 
             // check hit detection
         }
         else {
-            Projectiles.splice(i, 1)
+            Projectiles.splice(pi, 1)
         }
 
-        i++
+        pi++
     }
 
     // draw player
 
     HERO.update()
+
+    // do debug stuff
+
     if (DEBUG) {
         globalThis.HERO = HERO
+        globalThis.Projectiles = Projectiles
+        globalThis.Enemies = Enemies
     }
 }
 

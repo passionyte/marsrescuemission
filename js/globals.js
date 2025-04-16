@@ -54,7 +54,7 @@ export class Object {
 }
 
 // Some convenient keyboard codes
-const KEYS = {
+export const KEYS = {
     SPACE:32,
     UP_ARROW:38,
     LEFT_ARROW:37,
@@ -71,6 +71,8 @@ export const keyClasses = {
     left: [KEYS.A, KEYS.LEFT_ARROW],
     right: [KEYS.D, KEYS.RIGHT_ARROW]
 }
+
+export function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min}
 
 export function d(id) {
     return document.getElementById(id)
