@@ -1,4 +1,4 @@
-import { newImg, CTX, Object } from "./globals.js"
+import { newImg, CTX, Object, newAudio } from "./globals.js"
 
 export const Projectiles = []
 
@@ -19,6 +19,7 @@ export class Projectile extends Object {
     life
     time
     damage
+    sound = newAudio(null, 0.01)
 
     update() {
         this.position.x += this.velocity.x

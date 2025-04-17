@@ -87,13 +87,30 @@ export function d(id) {
 
 export function newImg(src) {
     const i = new Image()
-    i.src = src || "../images/en_generic.png"
+    i.src = `../images/${src || "en_generic.png"}`
 
     return i
 }
 
+export function newAudio(src, v) {
+    const a = new Audio(`../sounds/${src || "pew.mp3"}`)
+    a.volume = v || 0.1
+
+    return a
+}
+
 export function clearCanvas() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height)
+}
+
+export function cloneArray(a) {
+    const c = []
+
+    for (const x of a) {
+        c.push(x)
+    }
+
+    return c
 }
 
 export default { CANVAS, CTX } 
