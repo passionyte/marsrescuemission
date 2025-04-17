@@ -25,8 +25,11 @@ let nextlvl
 let PAUSED = false
 let FOCUSED = true
 
+// Audios
+
 let hurt = newAudio("pop.wav", 0.01)
-let block = newAudio("block.mp3", 0.01)
+let block = newAudio("block.mp3", 0.05)
+let ding = newAudio("powerup.mp3", 0.01)
 
 // Input
 
@@ -208,19 +211,32 @@ function update() {
     for (const u of fakePowerups) {
         u.update()
 
+        let pi = 0
         for (const p of Projectiles) {
-            if (checkCollision(u, p)) {
-                if (HERO[u.type]) {
-                    let n = (HERO[u.type] + u.strength)
-
-                    if (n > maxes[u.type]) n = maxes[u.type]
-
-                    HERO[u.type] = n
-                    SCORE += u.score
-                }
-
-                Powerups.splice(pui, 1)
+            if (p.player) {
+                if (checkCollision(u, p)) {
+                    if (HERO[u.type] != null) {
+                        ding.play()
+    
+                        if (HERO[u.type] < 0) {
+                            HERO[u.type] = 0
+                        }
+    
+                        let n = (HERO[u.type] + u.strength)
+    
+                        console.log(`giving ${u.strength} ${u.type}`)
+                        if (n > maxes[u.type]) n = maxes[u.type]
+                        console.log(`resolved to ${n}`)
+    
+                        HERO[u.type] = n
+                        SCORE += u.score    
+                    }
+    
+                    Powerups.splice(pui, 1)
+                    Projectiles.splice(pi, 1)
+                }   
             }
+            pi++
         }
         pui++
     }
@@ -233,7 +249,7 @@ function update() {
 
             if (!c) return
 
-            const e = new Ship(nm, randInt(50, (CANVAS.width - 50)), randInt(50, 250), c.w, c.h, c.hp, c.xs, c.ys, c.sdata, c.scale, c.src)
+            const e = new Ship(nm, randInt(100, (CANVAS.width - 100)), randInt(50, 250), c.w, c.h, c.hp, c.xs, c.ys, c.sdata, c.scale, c.src)
             Enemies.push(e)
 
             level.enemiesSpawned[nm]++

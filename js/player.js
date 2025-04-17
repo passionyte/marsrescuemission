@@ -1,4 +1,4 @@
-import { CTX, newImg, Object, CANVAS, DEBUG, newAudio } from "./globals.js"
+import { CTX, newImg, Object, CANVAS, DEBUG, newAudio, randInt } from "./globals.js"
 import { Projectile, Projectiles } from "./projectile.js"
 import { HERO } from "./main.js"
 
@@ -92,11 +92,11 @@ export const enemyClasses = {
         w: 498,
         h: 219,
         hp: 10,
-        xs: 2,
-        ys: 1,
+        xs: 3,
+        ys: 0,
         scale: 2,
         sdata: {
-            cooldown: 0.5,
+            cooldown: 0.15,
             damage: 2,
             color: "red",
             speed: 20,
@@ -124,7 +124,7 @@ export class Ship extends Object {
         this.last_shot = NOW
 
         const yo = ((s.inverted) && -25) || 25
-        const spread = (s.spreadmin && (this.width * (randInt(s.spreadmin, s.spreadmax) / 100)) || 0)
+        const spread = (((s.spreadmin != null) && (this.width * (randInt(s.spreadmin, s.spreadmax) / 100) - (this.width / 2)) || 0))
         const p = new Projectile((this.position.x + spread), (this.position.y + yo), 6, 12, s.life, s.color, s.damage)
         p.sound.play()
         p.velocity.y = ((s.inverted) && -s.speed) || s.speed
@@ -198,7 +198,7 @@ export class Player extends Ship {
             damage: 1
         }
 
-        super("Player", x, y, w, h, hp, 5, 0, sdata, 4, "ship.png")
+        super("Player", x, y, w, h, hp, 7, 0, sdata, 4, "ship.png")
 
         this.armor = ar
     }

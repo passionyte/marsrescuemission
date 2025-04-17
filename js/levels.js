@@ -18,7 +18,7 @@ export const Levels = { // First array is enemies, second array is power-ups
             generic: 10
         },
         {
-            armor: 2000
+            armor: 1500
         }
     ),
     2: new Level(
@@ -27,7 +27,7 @@ export const Levels = { // First array is enemies, second array is power-ups
             blue: 4
         },
         {
-            armor: 1900
+            armor: 1400
         }
     ),
     3: new Level(
@@ -37,7 +37,7 @@ export const Levels = { // First array is enemies, second array is power-ups
             pink: 2
         },
         {
-            armor: 1800
+            armor: 1300
         }
     ),
     4: new Level(
@@ -47,7 +47,7 @@ export const Levels = { // First array is enemies, second array is power-ups
             redblue: 2,
         },
         {
-            armor: 1700
+            armor: 1200
         }
     ),
     5: new Level(
@@ -58,8 +58,8 @@ export const Levels = { // First array is enemies, second array is power-ups
             orangeyellow: 1,
         },
         {
-            hp: 1500,
-            armor: 1800
+            hp: 1000,
+            armor: 1300
         }
     ),
     6: new Level(
@@ -69,8 +69,8 @@ export const Levels = { // First array is enemies, second array is power-ups
             pinkpurple: 1
         },
         {
-            hp: 1200,
-            armor: 1750
+            hp: 900,
+            armor: 1250
         }
     ),
     7: new Level(
@@ -81,8 +81,8 @@ export const Levels = { // First array is enemies, second array is power-ups
             pinkpurple: 2
         },
         {
-            hp: 1100,
-            armor: 1700
+            hp: 800,
+            armor: 1200
         }
     ),
     8: new Level(
@@ -91,8 +91,8 @@ export const Levels = { // First array is enemies, second array is power-ups
             pinkpurple: 3,
         },
         {
-            hp: 1000,
-            armor: 1600
+            hp: 750,
+            armor: 1100
         }
     ),
     9: new Level(
@@ -100,8 +100,8 @@ export const Levels = { // First array is enemies, second array is power-ups
             minion: 5
         },
         {
-            hp: 800,
-            armor: 1400
+            hp: 700,
+            armor: 1050
         }
     ),
     10: new Level(
@@ -109,8 +109,8 @@ export const Levels = { // First array is enemies, second array is power-ups
             boss: 1
         },
         {
-            hp: 1000,
-            armor: 1500
+            hp: 650,
+            armor: 1000
         }
     )
 }
