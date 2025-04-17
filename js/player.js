@@ -82,7 +82,7 @@ export const enemyClasses = {
         scale: 10,
         sdata: {
             cooldown: 0.4,
-            damage: 2,
+            damage: 1,
             color: "red",
             speed: 12,
             life: 0.8
@@ -96,11 +96,13 @@ export const enemyClasses = {
         ys: 1,
         scale: 2,
         sdata: {
-            cooldown: 0.1,
-            damage: 1,
+            cooldown: 0.5,
+            damage: 2,
             color: "red",
             speed: 20,
-            life: 0.6
+            life: 0.6,
+            spreadmin: 0,
+            spreadmax: 100
         }
     }
 }
@@ -116,14 +118,16 @@ export class Ship extends Object {
 
     shoot() {
         const NOW = performance.now()
-        if (!this.sdata || ((NOW - this.last_shot) < this.sdata.cooldown)) return
+        const s = this.sdata
+        if (!s || ((NOW - this.last_shot) < s.cooldown)) return
 
         this.last_shot = NOW
 
-        const yo = ((this.sdata.inverted) && -25) || 25
-        const p = new Projectile(this.position.x, (this.position.y + yo), 6, 12, this.sdata.life, this.sdata.color, this.sdata.damage)
+        const yo = ((s.inverted) && -25) || 25
+        const spread = (s.spreadmin && (this.width * (randInt(s.spreadmin, s.spreadmax) / 100)) || 0)
+        const p = new Projectile((this.position.x + spread), (this.position.y + yo), 6, 12, s.life, s.color, s.damage)
         p.sound.play()
-        p.velocity.y = ((this.sdata.inverted) && -this.sdata.speed) || this.sdata.speed
+        p.velocity.y = ((s.inverted) && -s.speed) || s.speed
         p.player = (this.type == "Player")
 
         Projectiles.push(p)

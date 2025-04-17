@@ -9,9 +9,13 @@ import { Powerup, powerupClasses, Powerups } from "./powerup.js"
 // Variables
 
 let frame_time = performance.now()
-const pHP = 10
-const mAR = 10 // Max armor
-export const HERO = new Player((CANVAS.width / 2), (CANVAS.height - 100), 388, 299, pHP, 10)
+
+const maxes = {
+    hp: 10,
+    armor: 10
+}
+
+export const HERO = new Player((CANVAS.width / 2), (CANVAS.height - 100), 388, 299, maxes.hp, maxes.armor)
 let lnum = 1
 let level = Levels[lnum]
 let SCORE = 0
@@ -22,6 +26,7 @@ let PAUSED = false
 let FOCUSED = true
 
 let hurt = newAudio("pop.wav", 0.01)
+let block = newAudio("block.mp3", 0.01)
 
 // Input
 
@@ -71,15 +76,15 @@ function input() {
 
 function countDown() {
     clearCanvas()
-    CTX.font = "50px Arial"
+    CTX.font = "50px Courier New"
     CTX.fillStyle = "white"
     CTX.fillText(`Clear! Incoming: Level ${lnum}`, (CANVAS.width / 2) - 200, (CANVAS.height / 2), 400)
 
-    CTX.font = "30px Arial"
+    CTX.font = "30px Courier New"
     CTX.fillStyle = "yellow"
-    CTX.fillText(`${(5 - cdsecs)}...`, (CANVAS.width / 2) - 10, (CANVAS.height / 2) + 50, 200)
+    CTX.fillText(`${(3 - cdsecs)}...`, (CANVAS.width / 2) - 10, (CANVAS.height / 2) + 50, 200)
 
-    if (cdsecs == 5) {
+    if (cdsecs == 3) {
         clearInterval(cd)
         cdsecs = 0
         level = nextlvl
@@ -97,12 +102,12 @@ function countDown() {
 const Heart = newImg("heart.png")
 let HeartScale = 4
 let HeartSize = 128
-let ArmorScale = 2
-let ArmorSize = 51
+let ArmorScale = 1.68
+let ArmorSize = 54
 
 function newHeart(i, src, xo, yo, scale) {
     let size = HeartSize
-    if (src.includes("Armor")) size = ArmorSize
+    if (src.includes("armor")) size = ArmorSize
 
     const s = (size / scale)
 
@@ -110,16 +115,16 @@ function newHeart(i, src, xo, yo, scale) {
         Heart.src = `../images/${src}`
     }
 
-    CTX.drawImage(Heart, 0, 0, 128, 128, ((i * s) + xo), (((CANVAS.height) - s) + yo), s, s)
+    CTX.drawImage(Heart, 0, 0, size, size, ((i * s) + xo), (((CANVAS.height) - s) + yo), s, s)
 }
 
 function drawHP(xo = 0, yo = 0) {
     // half a heart = 1 hp (Minecraft based system)
 
-    const remainder = (pHP - HERO.hp)
+    const remainder = (maxes.hp - HERO.hp)
     const emptyHearts = Math.floor((remainder / 2))
     const halfHeart = (((remainder / 2) % 1) == 0.5)
-    const fullHearts = (Math.floor(((pHP / 2) - emptyHearts)) - ((halfHeart) && 1) || 0)
+    const fullHearts = (Math.floor(((maxes.hp / 2) - emptyHearts)) - ((halfHeart) && 1) || 0)
 
     let heartCount = 0
 
@@ -142,15 +147,13 @@ function drawHP(xo = 0, yo = 0) {
 function drawArmor(xo = 0, yo = 0) {
     // half a armor = 1 armor (Minecraft based system)
 
-    const toFill = (mAR - HERO.armor)
+    const toFill = (maxes.armor - HERO.armor)
     
-    if (toFill == 10) return
+    if (toFill == 10) return // No armor, don't draw
 
-    const fullArmors = ((mAR / 2) - Math.floor((toFill / 2)))
     const halfArmor = (((toFill / 2) % 1) == 0.5)
-    const emptyArmors = (((toFill / 2) - fullArmors) - (((halfArmor)) && 1) || 0)
-
-    console.log(fullArmors)
+    const fullArmors = (((maxes.armor / 2) - Math.floor((toFill / 2))) - (((halfArmor)) && 1) || 0)
+    const emptyArmors = ((toFill / 2) - (((halfArmor)) && 1) || 0)
 
     let armorCount = 0
 
@@ -193,10 +196,33 @@ function update() {
         if (!d) return
 
         if (randInt(1, level.powerUps[c]) == 1) {
-            const p = new Powerup(c, randInt(d.smin, d.smax), randInt(50, (CANVAS.width - 50)), randInt(50, 250), d.w, d.h, d.scale)
+            const p = new Powerup(c, randInt(d.smin, d.smax), d.score, randInt(50, (CANVAS.width - 50)), randInt(50, 250), d.w, d.h, d.scale)
 
             Powerups.push(p)
         }
+    }
+
+    // handle power-ups
+    let pui = 0
+    const fakePowerups = cloneArray(Powerups)
+    for (const u of fakePowerups) {
+        u.update()
+
+        for (const p of Projectiles) {
+            if (checkCollision(u, p)) {
+                if (HERO[u.type]) {
+                    let n = (HERO[u.type] + u.strength)
+
+                    if (n > maxes[u.type]) n = maxes[u.type]
+
+                    HERO[u.type] = n
+                    SCORE += u.score
+                }
+
+                Powerups.splice(pui, 1)
+            }
+        }
+        pui++
     }
  
     // create bad guys
@@ -260,8 +286,15 @@ function update() {
             if (!p.player) {
                 // check player collision
                 if (checkCollision(HERO, p)) {
-                    hurt.play()
-                    HERO.hp -= p.damage
+                    if (HERO.armor <= 0) {
+                        hurt.play()
+                        HERO.hp -= p.damage
+                    }
+                    else {
+                        block.play()
+                        HERO.armor -= p.damage
+                    }
+                    
                     Projectiles.splice(pi, 1)
                 }
             }
@@ -293,17 +326,20 @@ function update() {
 
     // draw armor
 
-    drawArmor(0, -(128 / HeartScale))
+    const hasArmor = (HERO.armor > 0)
+    if (hasArmor) {
+        drawArmor(0, -(HeartSize / HeartScale))
+    }  
 
     // draw level
 
-    CTX.font = "40px Arial"
+    CTX.font = "40px Courier New"
     CTX.fillStyle = "yellow"
-    CTX.fillText(`Lvl: ${lnum}`, 0, (CANVAS.height - (128 / HeartScale)), 200)
+    CTX.fillText(`Lvl: ${lnum}`, 0, (CANVAS.height - (128 / HeartScale)) - ((hasArmor) && (ArmorSize / ArmorScale)) || 0, 200)
 
     // draw score
 
-    CTX.font = "40px Arial"
+    CTX.font = "40px Courier New"
     CTX.fillStyle = "white"
     CTX.fillText(SCORE, (CANVAS.width - 50), CANVAS.height, 200)
 
@@ -313,7 +349,7 @@ function update() {
         PAUSED = true
         clearCanvas()
 
-        CTX.font = "50px Arial"
+        CTX.font = "50px Courier New"
         CTX.fillStyle = "red"
         CTX.fillText("You died!", (CANVAS.width / 2) - 100, (CANVAS.height / 2), 200)
 
@@ -332,18 +368,18 @@ function update() {
         Projectiles.splice(0, Projectiles.length)
 
         if (nextlvl) {
-            CTX.font = "50px Arial"
+            CTX.font = "50px Courier New"
             CTX.fillStyle = "white"
             CTX.fillText(`Clear! Incoming: Level ${lnum}`, (CANVAS.width / 2) - 200, (CANVAS.height / 2), 400)
 
             cd = setInterval(countDown, ((!DEBUG) && 1000) || 1)
         }
         else {
-            CTX.font = "50px Arial"
+            CTX.font = "50px Courier New"
             CTX.fillStyle = "green"
             CTX.fillText("You win!", (CANVAS.width / 2) - 100, (CANVAS.height / 2), 200)
 
-            if (HERO.hp == pHP) {
+            if (HERO.hp == maxes.hp) {
                 CTX.fillText("Perfect!", (CANVAS.width / 2) - 87, (CANVAS.height / 2) + 100, 200)
             }
             else {
@@ -379,16 +415,16 @@ function startgame(ev) {
 function spritescreen() {
     CTX.fillStyle = "white"
 
-    CTX.font = "40px Arial"
-    CTX.fillText("Mars Rescue Mission", (CANVAS.width / 2) - 180, (CANVAS.height / 2), 400)
-    CTX.font = "20px Arial"
+    CTX.font = "40px Courier New"
+    CTX.fillText("Mars Rescue Mission", (CANVAS.width / 2) - 185, (CANVAS.height / 2), 400)
+    CTX.font = "20px Courier New"
     CTX.fillText("Remastered", (CANVAS.width / 2) - 50, (CANVAS.height / 2) + 25, 400)
 
-    CTX.font = "25px Arial"
-    CTX.fillText("Press Space to play", (CANVAS.width / 2) - 110, (CANVAS.height / 2) + 100, 400)
+    CTX.font = "25px Courier New"
+    CTX.fillText("Press Space to play", (CANVAS.width / 2) - 130, (CANVAS.height / 2) + 100, 400)
 
-    CTX.font = "25px Arial"
-    CTX.fillText("©2025 Passionyte", (CANVAS.width / 2) - 100, CANVAS.height - 50, 400)
+    CTX.font = "25px Courier New"
+    CTX.fillText("©2025 Passionyte", (CANVAS.width / 2) - 110, CANVAS.height - 50, 400)
 
     document.addEventListener("keydown", startgame)
 }
