@@ -39,7 +39,7 @@ export const enemyClasses = {
             cooldown: 1,
             damage: 1,
             color: "skyblue",
-            speed: 8,
+            speed: 6,
             life: 2
         }
     },
@@ -69,7 +69,7 @@ export const enemyClasses = {
             cooldown: 0.5,
             damage: 1,
             color: "pink",
-            speed: 12,
+            speed: 10,
             life: 1
         }
     },
@@ -84,8 +84,23 @@ export const enemyClasses = {
             cooldown: 0.4,
             damage: 2,
             color: "red",
-            speed: 15,
+            speed: 12,
             life: 0.8
+        }
+    },
+    boss: {
+        w: 498,
+        h: 219,
+        hp: 10,
+        xs: 2,
+        ys: 1,
+        scale: 2,
+        sdata: {
+            cooldown: 0.1,
+            damage: 1,
+            color: "red",
+            speed: 20,
+            life: 0.6
         }
     }
 }
@@ -169,7 +184,7 @@ export class Ship extends Object {
 }
 
 export class Player extends Ship {
-    constructor(x, y, w, h, hp) {
+    constructor(x, y, w, h, hp, ar) {
         const sdata = {
             speed: 12,
             cooldown: 0.1,
@@ -180,6 +195,8 @@ export class Player extends Ship {
         }
 
         super("Player", x, y, w, h, hp, 5, 0, sdata, 4, "ship.png")
+
+        this.armor = ar
     }
 }
 

@@ -4,12 +4,14 @@ import { DEBUG, MS_PER_FRAME, CANVAS, CTX, keyClasses, randInt, clearCanvas, new
 import { Ship, Player, Enemies, enemyClasses } from "./player.js"
 import { Projectiles, checkCollision } from "./projectile.js"
 import { Levels } from "./levels.js"
+import { Powerup, powerupClasses, Powerups } from "./powerup.js"
 
 // Variables
 
 let frame_time = performance.now()
 const pHP = 10
-export const HERO = new Player((CANVAS.width / 2), (CANVAS.height - 100), 388, 299, pHP)
+const mAR = 10 // Max armor
+export const HERO = new Player((CANVAS.width / 2), (CANVAS.height - 100), 388, 299, pHP, 10)
 let lnum = 1
 let level = Levels[lnum]
 let SCORE = 0
@@ -94,9 +96,15 @@ function countDown() {
 
 const Heart = newImg("heart.png")
 let HeartScale = 4
+let HeartSize = 128
+let ArmorScale = 2
+let ArmorSize = 51
 
-function newHeart(i, src, xo, yo) {
-    const s = (128 / HeartScale)
+function newHeart(i, src, xo, yo, scale) {
+    let size = HeartSize
+    if (src.includes("Armor")) size = ArmorSize
+
+    const s = (size / scale)
 
     if (src) {
         Heart.src = `../images/${src}`
@@ -116,18 +124,49 @@ function drawHP(xo = 0, yo = 0) {
     let heartCount = 0
 
     for (let i = 0; (i < fullHearts); i++) {
-        newHeart(heartCount, "heart.png", xo, yo)
+        newHeart(heartCount, "heart.png", xo, yo, HeartScale)
         heartCount++
     }
 
     if (halfHeart) { // Only one half heart can exist
-        newHeart(heartCount, "heart_half.png", xo, yo)
+        newHeart(heartCount, "heart_half.png", xo, yo, HeartScale)
         heartCount++
     }
 
     for (let i = 0; (i < emptyHearts); i++) {
-        newHeart(heartCount, "heart_empty.png", xo, yo)
+        newHeart(heartCount, "heart_empty.png", xo, yo, HeartScale)
         heartCount++
+    }
+}
+
+function drawArmor(xo = 0, yo = 0) {
+    // half a armor = 1 armor (Minecraft based system)
+
+    const toFill = (mAR - HERO.armor)
+    
+    if (toFill == 10) return
+
+    const fullArmors = ((mAR / 2) - Math.floor((toFill / 2)))
+    const halfArmor = (((toFill / 2) % 1) == 0.5)
+    const emptyArmors = (((toFill / 2) - fullArmors) - (((halfArmor)) && 1) || 0)
+
+    console.log(fullArmors)
+
+    let armorCount = 0
+
+    for (let i = 0; (i < fullArmors); i++) {
+        newHeart(armorCount, "armor.png", xo, yo, ArmorScale)
+        armorCount++
+    }
+
+    if (halfArmor) { // Only one half armor can exist
+        newHeart(armorCount, "armor_half.png", xo, yo, ArmorScale)
+        armorCount++
+    }
+
+    for (let i = 0; (i < emptyArmors); i++) {
+        newHeart(armorCount, "armor_empty.png", xo, yo, ArmorScale)
+        armorCount++
     }
 }
 
@@ -145,6 +184,20 @@ function update() {
     if (PAUSED || !FOCUSED) return
     // Clear the canvas
     clearCanvas()
+
+    // create power-ups
+
+    for (const c in level.powerUps) {
+        const d = powerupClasses[c]
+
+        if (!d) return
+
+        if (randInt(1, level.powerUps[c]) == 1) {
+            const p = new Powerup(c, randInt(d.smin, d.smax), randInt(50, (CANVAS.width - 50)), randInt(50, 250), d.w, d.h, d.scale)
+
+            Powerups.push(p)
+        }
+    }
  
     // create bad guys
 
@@ -154,7 +207,7 @@ function update() {
 
             if (!c) return
 
-            const e = new Ship(nm, randInt(50, CANVAS.width - 50), randInt(50, 250), c.w, c.h, c.hp, c.xs, c.ys, c.sdata, c.scale, c.src)
+            const e = new Ship(nm, randInt(50, (CANVAS.width - 50)), randInt(50, 250), c.w, c.h, c.hp, c.xs, c.ys, c.sdata, c.scale, c.src)
             Enemies.push(e)
 
             level.enemiesSpawned[nm]++
@@ -237,6 +290,10 @@ function update() {
     // draw hp
 
     drawHP()
+
+    // draw armor
+
+    drawArmor(0, -(128 / HeartScale))
 
     // draw level
 

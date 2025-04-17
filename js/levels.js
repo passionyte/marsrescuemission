@@ -2,8 +2,9 @@ class Level {
     enemyCounts = {}
     enemiesSpawned = {}
 
-    constructor(e) {
+    constructor(e, p) {
         this.enemyCounts = e
+        this.powerUps = p
 
         for (const nm in e) {
             this.enemiesSpawned[nm] = 0
@@ -11,41 +12,108 @@ class Level {
     }
 }
 
-export const Levels = {
-    1: new Level({
-        generic: 10
-    }),
-    2: new Level({
-        generic: 8,
-        blue: 4
-    }),
-    3: new Level({
-        generic: 4,
-        blue: 6,
-        pink: 2
-    }),
-    4: new Level({
-        blue: 4,
-        pink: 3,
-        redblue: 2,
-    }),
-    5: new Level({
-        blue: 1,
-        pink: 1,
-        redblue: 3,
-        orangeyellow: 1,
-    }),
-    6: new Level({
-        redblue: 2,
-        orangeyellow: 2,
-        pinkpurple: 1
-    }),
-    7: new Level({
-        pink: 3,
-        redblue: 1,
-        orangeyellow: 3,
-        pinkpurple: 2
-    }),
+export const Levels = { // First array is enemies, second array is power-ups
+    1: new Level(
+        {
+            generic: 10
+        },
+        {
+            armor: 2000
+        }
+    ),
+    2: new Level(
+        {
+            generic: 8,
+            blue: 4
+        },
+        {
+            armor: 1900
+        }
+    ),
+    3: new Level(
+        {
+            generic: 4,
+            blue: 6,
+            pink: 2
+        },
+        {
+            armor: 1800
+        }
+    ),
+    4: new Level(
+        {
+            blue: 4,
+            pink: 3,
+            redblue: 2,
+        },
+        {
+            armor: 1700
+        }
+    ),
+    5: new Level(
+        {
+            blue: 1,
+            pink: 1,
+            redblue: 3,
+            orangeyellow: 1,
+        },
+        {
+            heart: 1500,
+            armor: 1800
+        }
+    ),
+    6: new Level(
+        {
+            redblue: 2,
+            orangeyellow: 2,
+            pinkpurple: 1
+        },
+        {
+            heart: 1200,
+            armor: 1750
+        }
+    ),
+    7: new Level(
+        {
+            pink: 3,
+            redblue: 1,
+            orangeyellow: 3,
+            pinkpurple: 2
+        },
+        {
+            heart: 1100,
+            armor: 1700
+        }
+    ),
+    8: new Level(
+        {
+            orangeyellow: 1,
+            pinkpurple: 3,
+            minion: 3
+        },
+        {
+            heart: 1000,
+            armor: 1600
+        }
+    ),
+    9: new Level(
+        {
+            minion: 5
+        },
+        {
+            heart: 800,
+            armor: 1400
+        }
+    ),
+    10: new Level(
+        {
+            boss: 1
+        },
+        {
+            heart: 1000,
+            armor: 1500
+        }
+    )
 }
 
 export default { Levels }
