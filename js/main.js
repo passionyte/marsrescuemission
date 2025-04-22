@@ -412,7 +412,7 @@ function update() {
             CTX.fillText("You win!", (CANVAS.width / 2) - 100, (CANVAS.height / 2), 200)
 
             if (HERO.hp == maxes.hp) {
-                CTX.fillText("Perfect!", (CANVAS.width / 2) - 87, (CANVAS.height / 2) + 100, 200)
+                CTX.fillText("Perfect!", (CANVAS.width / 2) - 105, (CANVAS.height / 2) + 100, 200)
             }
             else {
                 CTX.fillStyle = "white"
