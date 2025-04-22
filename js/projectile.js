@@ -3,7 +3,9 @@ import { newImg, CTX, Object, newAudio } from "./globals.js"
 export const Projectiles = []
 
 export function checkCollision(o0, o1) {
-    return !(o0.bottom <= o1.top || o0.top >= o1.bottom) || (o0.right <= o1.left || o0.left >= o1.right)
+    if (o0.right <= o1.left || o0.left >= o1.right) return false
+    if (o0.bottom <= o1.top || o0.top >= o1.bottom) return false
+    return true
 }
 
 export class Projectile extends Object {
