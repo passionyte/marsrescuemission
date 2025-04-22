@@ -102,23 +102,27 @@ function countDown() {
 
 // Image initiations
 
-const Heart = newImg("heart.png")
+const heartImgs = {
+    heart: newImg("heart.png"),
+    heart_half: newImg("heart_half.png"),
+    heart_empty: newImg("heart_empty.png"),
+    armor: newImg("armor.png"),
+    armor_half: newImg("armor_half.png"),
+    armor_empty: newImg("armor_empty.png")
+}
+
 let HeartScale = 4
 let HeartSize = 128
 let ArmorScale = 1.68
 let ArmorSize = 54
 
-function newHeart(i, src, xo, yo, scale) {
+function newHeart(i, state = "heart", xo, yo, scale) {
     let size = HeartSize
-    if (src.includes("armor")) size = ArmorSize
+    if (state.includes("armor")) size = ArmorSize
 
     const s = (size / scale)
 
-    if (src) {
-        Heart.src = `../images/${src}`
-    }
-
-    CTX.drawImage(Heart, 0, 0, size, size, ((i * s) + xo), (((CANVAS.height) - s) + yo), s, s)
+    CTX.drawImage(heartImgs[state], 0, 0, size, size, ((i * s) + xo), (((CANVAS.height) - s) + yo), s, s)
 }
 
 function drawHP(xo = 0, yo = 0) {
@@ -132,17 +136,17 @@ function drawHP(xo = 0, yo = 0) {
     let heartCount = 0
 
     for (let i = 0; (i < fullHearts); i++) {
-        newHeart(heartCount, "heart.png", xo, yo, HeartScale)
+        newHeart(heartCount, "heart", xo, yo, HeartScale)
         heartCount++
     }
 
     if (halfHeart) { // Only one half heart can exist
-        newHeart(heartCount, "heart_half.png", xo, yo, HeartScale)
+        newHeart(heartCount, "heart_half", xo, yo, HeartScale)
         heartCount++
     }
 
     for (let i = 0; (i < emptyHearts); i++) {
-        newHeart(heartCount, "heart_empty.png", xo, yo, HeartScale)
+        newHeart(heartCount, "heart_empty", xo, yo, HeartScale)
         heartCount++
     }
 }
@@ -161,17 +165,17 @@ function drawArmor(xo = 0, yo = 0) {
     let armorCount = 0
 
     for (let i = 0; (i < fullArmors); i++) {
-        newHeart(armorCount, "armor.png", xo, yo, ArmorScale)
+        newHeart(armorCount, "armor", xo, yo, ArmorScale)
         armorCount++
     }
 
     if (halfArmor) { // Only one half armor can exist
-        newHeart(armorCount, "armor_half.png", xo, yo, ArmorScale)
+        newHeart(armorCount, "armor_half", xo, yo, ArmorScale)
         armorCount++
     }
 
     for (let i = 0; (i < emptyArmors); i++) {
-        newHeart(armorCount, "armor_empty.png", xo, yo, ArmorScale)
+        newHeart(armorCount, "armor_empty", xo, yo, ArmorScale)
         armorCount++
     }
 }
