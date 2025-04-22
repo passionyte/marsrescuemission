@@ -23,6 +23,7 @@ let cdsecs = 0
 let cd
 let nextlvl
 let PAUSED = false
+let sudoPAUSED = false
 let FOCUSED = true
 
 // Audios
@@ -58,17 +59,24 @@ function input() {
         downKeys[key] = true
         downClasses[getClassFromKey(key)] = true
 
-        if (PAUSED || !FOCUSED) return
+        if (!FOCUSED) return
 
-        if (keyClasses.shoot.includes(key)) {
-            HERO.shoot()
+        if (!PAUSED) {
+            if (!sudoPAUSED) { // Game related binds only
+                if (keyClasses.shoot.includes(key)) {
+                    HERO.shoot()
+                }
+            }
+            if (keyClasses.pause.includes(key)) {
+                sudoPAUSED = (!sudoPAUSED)
+            }
         }
     })
 
     document.addEventListener("keyup", ev => {
         const key = ev.keyCode
 
-        if (!downKeys[key]) return
+        if (!downKeys[key]) return 
 
         downKeys[key] = false
         downClasses[getClassFromKey(key)] = false
@@ -191,9 +199,17 @@ function update() {
     frame_time = NOW - EXCESS_TIME
     /*** END FPS Trap ***/
 
-    if (PAUSED || !FOCUSED) return
+    if (!FOCUSED || PAUSED) return
+
     // Clear the canvas
     clearCanvas()
+
+    if (sudoPAUSED) {
+        CTX.font = "50px Courier New"
+        CTX.fillStyle = "white"
+        CTX.fillText("Paused", (CANVAS.width / 2) - 100, (CANVAS.height / 2), 200)
+        return
+    }
 
     // create power-ups
 
@@ -222,15 +238,11 @@ function update() {
                     if (HERO[u.type] != null) {
                         ding.play()
     
-                        if (HERO[u.type] < 0) {
-                            HERO[u.type] = 0
-                        }
+                        if (HERO[u.type] < 0) HERO[u.type] = 0
     
                         let n = (HERO[u.type] + u.strength)
     
-                        console.log(`giving ${u.strength} ${u.type}`)
                         if (n > maxes[u.type]) n = maxes[u.type]
-                        console.log(`resolved to ${n}`)
     
                         HERO[u.type] = n
                         SCORE += u.score    

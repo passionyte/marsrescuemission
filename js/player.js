@@ -135,7 +135,7 @@ export class Ship extends Object {
 
     update() {
         this.draw()
-
+        
         const nx = (this.position.x + this.velocity.x)
         const ny  = (this.position.y + this.velocity.y)
 

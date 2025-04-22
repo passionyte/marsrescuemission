@@ -74,13 +74,16 @@ export const KEYS = {
     W:87,
     A:65,
     S:83,
-    D:68
+    D:68,
+    EQUALS:187,
+    ENTER:13
    };
 
 export const keyClasses = {
     shoot: [KEYS.SPACE, KEYS.UP_ARROW],
     left: [KEYS.A, KEYS.LEFT_ARROW],
-    right: [KEYS.D, KEYS.RIGHT_ARROW]
+    right: [KEYS.D, KEYS.RIGHT_ARROW],
+    pause: [KEYS.EQUALS, KEYS.ENTER]
 }
 
 export function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min}
