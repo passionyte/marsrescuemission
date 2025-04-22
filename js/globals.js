@@ -87,13 +87,13 @@ export function d(id) {
 
 export function newImg(src) {
     const i = new Image()
-    i.src = `../images/${src || "en_generic.png"}`
+    i.src = `../imgs/${src || "en_generic.png"}`
 
     return i
 }
 
 export function newAudio(src, v) {
-    const a = new Audio(`../sounds/${src || "pew.mp3"}`)
+    const a = new Audio(`../snds/${src || "pew.mp3"}`)
     a.volume = v || 0.1
 
     return a
