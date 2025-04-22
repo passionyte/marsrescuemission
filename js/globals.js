@@ -89,15 +89,15 @@ export function d(id) {
     return document.getElementById(id)
 }
 
-export function newImg(src = "en_generic.png") {
+export function newImg(src) {
     const i = new Image()
-    i.src = imgUrl + src
+    i.src = imgUrl + (((src) && src) || "en_generic.png")
 
     return i
 }
 
-export function newAudio(src = "pew.mp3", v) {
-    const a = new Audio(sndUrl + src)
+export function newAudio(src, v) {
+    const a = new Audio(sndUrl + (((src) && src) || "pew.mp3"))
     a.volume = v || 0.1
 
     return a
