@@ -5,7 +5,7 @@ export const FPS = 60
 export const DEBUG = false
 export const MS_PER_FRAME = (1000 / FPS)
 
-const useRaw = (document.URL == "passionyte.github.io/marsrescuemission")
+const useRaw = (document.URL.includes("passionyte.github.io/marsrescuemission"))
 export const imgUrl = ((!useRaw) && "../imgs/") || "https://raw.githubusercontent.com/passionyte/marsrescuemission/refs/heads/main/imgs/"
 export const sndUrl = ((!useRaw) && "../snds/") || "https://raw.githubusercontent.com/passionyte/marsrescuemission/refs/heads/main/snds/"
 
