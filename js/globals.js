@@ -5,6 +5,10 @@ export const FPS = 60
 export const DEBUG = false
 export const MS_PER_FRAME = (1000 / FPS)
 
+const useRaw = (document.URL == "passionyte.github.io/marsrescuemission")
+export const imgUrl = (!useRaw) && "../imgs/" || "https://raw.githubusercontent.com/passionyte/marsrescuemission/refs/heads/main/imgs/"
+export const sndUrl = (!useRaw) && "../snds/" || "https://raw.githubusercontent.com/passionyte/marsrescuemission/refs/heads/main/snds/"
+
 export class Object {
     position = {
         x: 0,
@@ -87,13 +91,13 @@ export function d(id) {
 
 export function newImg(src) {
     const i = new Image()
-    i.src = `./../imgs/${src || "en_generic.png"}`
+    i.src = imgUrl + src || "en_generic.png"
 
     return i
 }
 
 export function newAudio(src, v) {
-    const a = new Audio(`./../snds/${src || "pew.mp3"}`)
+    const a = new Audio(sndUrl + src || "pew.mp3")
     a.volume = v || 0.1
 
     return a
