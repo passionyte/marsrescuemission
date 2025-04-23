@@ -97,6 +97,7 @@ export const enemyClasses = {
         scale: 2.5,
         bar: true,
         barcolor: "red",
+        score: 100,
         sdata: {
             cooldown: 0.15,
             damage: 2,
@@ -117,7 +118,7 @@ export const enemyClasses = {
         sdata: {
             cooldown: 1.5,
             damage: 1,
-            color: "green",
+            color: "lime",
             speed: 14,
             life: 1,
             bullets: 3,
@@ -174,11 +175,9 @@ export class Ship extends Object {
         const fromPlr = (this.type == "Player")
         const b = ((s.bullets) && s.bullets) || 1   
 
-        let p
-
         for (let i = 0; (i < b); i++) {
             const spread = (((s.spreadmin != null) && (this.width * (randInt(s.spreadmin, s.spreadmax) / 100) - (this.width / 2)) || 0))
-            p = new Projectile((this.position.x + spread), (this.position.y + yo), 6, 12, s.life, s.color, s.damage, (i == 0))
+            const p = new Projectile((this.position.x + spread), (this.position.y + yo), 6, 12, s.life, s.color, s.damage, (i == 0))
 
             if (i == 0) p.sound.play()
             p.velocity.y = ((s.inverted) && -s.speed) || s.speed
@@ -197,19 +196,13 @@ export class Ship extends Object {
         const h = (this.height / 2)
 
         if (nx >= (CANVAS.width - w) || nx <= w) {
-            if (this.type != "Player") {
-                if (this.varspeed) {
-                    this.varspeed *= -1
-                }
-            }
+            if (this.type != "Player") if (this.varspeed) this.varspeed *= -1
 
             return
         }
 
         if (ny >= (CANVAS.height - h) || ny <= h) {
-            if (this.type != "Player") {
-                HERO.hp = 0
-            }
+            if (this.type != "Player") HERO.hp = 0
 
             return
         }
@@ -219,22 +212,25 @@ export class Ship extends Object {
     }
 
     draw() {
-        if (DEBUG) {
-            super.draw()
-        }
+        if (DEBUG) super.draw()
 
         CTX.drawImage(this.img, 0, 0, this.size.w, this.size.h, this.left, this.top, this.width, this.height)
     }
 
-    constructor(type, x, y, w, h, hp, xs, ys, sdata, scale, src) {
+    constructor(type, x, y, w, h, hp, xs, ys, sdata, scale, src, score, bar, barcolor) {
         super(x, y, w, h, scale)
 
         this.type = type
         this.hp = hp
+        this.maxhp = hp
 
         this.xspeed = xs
         this.yspeed = ys
         this.sdata = sdata
+        this.score = score
+
+        this.bar = (bar)
+        this.barcolor = barcolor
 
         this.scale = scale
         this.img = newImg(src || `en_${type}.png`)

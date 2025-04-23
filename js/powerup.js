@@ -51,9 +51,7 @@ export class Powerup extends Object {
     }
 
     draw() {
-        if (DEBUG) {
-            super.draw()
-        }
+        if (DEBUG) super.draw()
 
         CTX.drawImage(this.img, 0, 0, this.size.w, this.size.h, this.left, this.top, this.width, this.height)
     }

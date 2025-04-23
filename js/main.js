@@ -228,7 +228,7 @@ function update() {
 
     // handle power-ups
     let pui = 0
-    const fakePowerups = cloneArray(Powerups)
+    let fakePowerups = cloneArray(Powerups)
     for (const u of fakePowerups) {
         u.update()
 
@@ -271,6 +271,8 @@ function update() {
         }
         pui++
     }
+    fakePowerups = null
+    pui = null
  
     // create bad guys
 
@@ -280,7 +282,7 @@ function update() {
 
             if (!c) return // Non-existent enemy class
 
-            const e = new Ship(nm, randInt(100, (CANVAS.width - 100)), randInt(50, 250), c.w, c.h, c.hp, c.xs, c.ys, c.sdata, c.scale, c.src)
+            const e = new Ship(nm, randInt(100, (CANVAS.width - 100)), randInt(50, 250), c.w, c.h, c.hp, c.xs, c.ys, c.sdata, c.scale, c.src, c.score, c.bar, c.barcolor)
             Enemies.push(e)
 
             level.enemiesSpawned[nm]++
@@ -290,13 +292,14 @@ function update() {
     // handle bad guys
 
     let ei = 0
-    const fakeEnemies = cloneArray(Enemies) // Fixes that flickering issue
+    let fakeEnemies = cloneArray(Enemies) // Fixes that flickering issue
 
     for (const e of fakeEnemies) {
         if (e.hp <= 0) { // Death
             e.boom.play()
             Enemies.splice(ei, 1)   
-            SCORE++
+
+            SCORE += ((e.score) && e.score) || 1
         }
         else { // Very simple AI
             if (!e.varspeed) e.varspeed = -e.xspeed
@@ -313,10 +316,19 @@ function update() {
                 }
             }
 
+            if (e.bar) { // Has large HP Bar (intended for single boss usage)
+                CTX.fillStyle = "darkgray"
+                CTX.fillRect(10, 10, 580, 50)
+                CTX.fillStyle = e.barcolor
+                CTX.fillRect(10, 10, (580 * (e.hp / e.maxhp)), 50)
+            }
+
             if (checkCollision(HERO, e)) HERO.hp = 0 // Touching the player kills them
         }
         ei++
     }
+    fakeEnemies = null
+    ei = null
 
     // handle projectiles
 
@@ -359,6 +371,7 @@ function update() {
 
         pi++
     }
+    pi = null
 
     // draw player
 
@@ -372,9 +385,7 @@ function update() {
     // draw armor
 
     const hasArmor = (HERO.armor > 0)
-    if (hasArmor) {
-        drawArmor(0, -(HeartSize / HeartScale))
-    }  
+    if (hasArmor) drawArmor(0, -(HeartSize / HeartScale))
 
     // handle auto
 
