@@ -54,7 +54,7 @@ export const enemyClasses = {
             cooldown: 0.1,
             damage: 1,
             color: "yellow",
-            speed: 30,
+            speed: 32,
             life: 0.14
         }
     },
@@ -95,6 +95,8 @@ export const enemyClasses = {
         xs: 3,
         ys: 0,
         scale: 2.5,
+        bar: true,
+        barcolor: "red",
         sdata: {
             cooldown: 0.15,
             damage: 2,
@@ -115,12 +117,12 @@ export const enemyClasses = {
         sdata: {
             cooldown: 1.5,
             damage: 1,
-            color: "pink",
+            color: "green",
             speed: 14,
             life: 1,
-            bullets: 4,
-            spreadmin: -100,
-            spreadmax: 200
+            bullets: 3,
+            spreadmin: 0,
+            spreadmax: 100
         }
     },
     ghost: {
@@ -130,6 +132,24 @@ export const enemyClasses = {
         xs: -5,
         ys: 4,
         scale: 8
+    },
+    magma: {
+        w: 645,
+        h: 456,
+        hp: 2,
+        xs: 4,
+        ys: 1,
+        scale: 8,
+        sdata: {
+            cooldown: 2,
+            damage: 1,
+            color: "orange",
+            speed: 22,
+            life: 0.33,
+            bullets: 5,
+            spreadmin: -200,
+            spreadmax: 300
+        }
     }
 }
 
@@ -240,17 +260,14 @@ export class Player extends Ship {
 }
 
 export function addStat(s, nm, x, max = 10) {
-    if (s[nm]) {
+    if (s[nm] != null) {
+        if (s[nm] < 0) s[nm] = 0
+
         let a = (s[nm] + x)
 
-        if (a < 0) {
-            a = 0
-        }
+        if (a > max) a = max
 
-        if (a > max) {
-            a = max
-        }
-
+        console.log(`setting ${nm} to ${a}`)
         s[nm] = a
     }
 }

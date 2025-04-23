@@ -4,7 +4,7 @@ export const CTX = CANVAS.getContext("2d")
 export const FPS = 60
 export const DEBUG = false
 export const MS_PER_FRAME = (1000 / FPS)
-export const version = "1.1"
+export const version = "1.2"
 
 const useRaw = (document.URL.includes("passionyte.github.io/marsrescuemission"))
 export const imgUrl = ((!useRaw) && "../imgs/") || "https://raw.githubusercontent.com/passionyte/marsrescuemission/refs/heads/main/imgs/"

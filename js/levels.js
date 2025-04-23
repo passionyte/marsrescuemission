@@ -19,7 +19,7 @@ export const Levels = { // First array is enemies, second array is power-ups, th
             generic: 10
         },
         {
-            armor: 1500,
+            armor: 1400,
         }
     ),
     2: new Level(
@@ -28,7 +28,7 @@ export const Levels = { // First array is enemies, second array is power-ups, th
             blue: 4
         },
         {
-            armor: 1400
+            armor: 300
         }
     ),
     3: new Level(
@@ -38,7 +38,7 @@ export const Levels = { // First array is enemies, second array is power-ups, th
             pink: 2
         },
         {
-            armor: 1300
+            armor: 1250
         }
     ),
     4: new Level(
@@ -48,6 +48,7 @@ export const Levels = { // First array is enemies, second array is power-ups, th
             redblue: 2,
         },
         {
+            hp: 1250,
             armor: 1200,
             auto: 2000
         }
@@ -61,8 +62,11 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         },
         {
             hp: 1000,
-            armor: 1300,
+            armor: 1150,
             auto: 1500
+        },
+        {
+            armor: 2
         }
     ),
     6: new Level(
@@ -73,7 +77,7 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         },
         {
             hp: 900,
-            armor: 1250,
+            armor: 1100,
             auto: 1400
         }
     ),
@@ -86,7 +90,7 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         },
         {
             hp: 800,
-            armor: 1200,
+            armor: 1050,
             auto: 1300
         }
     ),
@@ -97,7 +101,7 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         },
         {
             hp: 750,
-            armor: 1100,
+            armor: 1000,
             auto: 1250
         }
     ),
@@ -107,7 +111,7 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         },
         {
             hp: 700,
-            armor: 1000,
+            armor: 900,
             auto: 1100
         }
     ),
@@ -145,7 +149,32 @@ export const Levels = { // First array is enemies, second array is power-ups, th
             armor: 800,
             auto: 950
         }
-    )
+    ),
+    13: new Level(
+        {
+            spectral: 2,
+            ghost: 3,
+            magma: 1
+        },
+        {
+            hp: 550,
+            armor: 750,
+            auto: 900
+        }
+    ),
+    14: new Level(
+        {
+            spectral: 1,
+            ghost: 2,
+            magma: 3
+        },
+        {
+            hp: 500,
+            armor: 700,
+            auto: 850
+        }
+    ),
+
 }
 
 export default { Levels }

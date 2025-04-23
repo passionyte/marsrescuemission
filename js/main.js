@@ -15,7 +15,7 @@ const maxes = {
     armor: 10
 }
 
-export const HERO = new Player((CANVAS.width / 2), (CANVAS.height - 100), 388, 299, maxes.hp, maxes.armor)
+export const HERO = new Player((CANVAS.width / 2), (CANVAS.height - 100), 388, 299, maxes.hp, 0)
 let lnum = 1
 let level = Levels[lnum]
 let SCORE = 0
@@ -25,12 +25,6 @@ let nextlvl
 let PAUSED = false
 let sudoPAUSED = false
 let FOCUSED = true
-
-// Audios
-
-let hurt = newAudio("pop.wav", 0.01)
-let block = newAudio("block.mp3", 0.05)
-let ding = newAudio("powerup.mp3", 0.01)
 
 // Input
 
@@ -245,7 +239,7 @@ function update() {
                     const t = u.type
 
                     if (HERO[t] != null) { // Stat based power-up
-                        ding.play()
+                        newAudio("powerup.mp3", 0.03).play()
 
                         if (u.dur) { // Has a duration
                             const old = HERO[t]
@@ -299,31 +293,28 @@ function update() {
     const fakeEnemies = cloneArray(Enemies) // Fixes that flickering issue
 
     for (const e of fakeEnemies) {
-        if (e.hp <= 0) {
+        if (e.hp <= 0) { // Death
             e.boom.play()
             Enemies.splice(ei, 1)   
             SCORE++
         }
-        else {
+        else { // Very simple AI
             if (!e.varspeed) e.varspeed = -e.xspeed
             e.velocity.x = e.varspeed
             e.velocity.y = e.yspeed
 
             e.update()
 
-            if (e.sdata) {
+            if (e.sdata) { // Has projectiles
                 const coold = (e.sdata.cooldown * 1000)
 
-                if ((NOW - e.last_shot) > (coold + ((randInt(0.1, 0.4) - 0.1) * coold))) {
+                if ((NOW - e.last_shot) > (coold + ((randInt(0.1, 0.4) - 0.1) * coold))) { // Make sure we follow the cooldown here
                     e.shoot()
                 }
             }
 
-            if (checkCollision(HERO, e)) {
-                HERO.hp = 0
-            }
+            if (checkCollision(HERO, e)) HERO.hp = 0 // Touching the player kills them
         }
-        
         ei++
     }
 
@@ -340,11 +331,11 @@ function update() {
                 // check player collision
                 if (checkCollision(HERO, p)) {
                     if (HERO.armor <= 0) {
-                        hurt.play()
+                        newAudio("pop.wav", 0.05).play()
                         HERO.hp -= p.damage
                     }
                     else {
-                        block.play()
+                        newAudio("block.mp3", 0.1).play()
                         HERO.armor -= p.damage
                     }
                     
@@ -402,7 +393,7 @@ function update() {
 
     CTX.font = "40px Courier New"
     CTX.fillStyle = "white"
-    CTX.fillText(SCORE, (CANVAS.width - 50), (CANVAS.height - 5), 200)
+    CTX.fillText(SCORE, (CANVAS.width - 100), (CANVAS.height - 5), 200)
 
     // do lose condition
 
@@ -427,7 +418,7 @@ function update() {
 
         const r = level.rewards
         if (r) {
-            for (const stat in r) {
+            for (const stat in r) { // Bonuses for completing certain levels
                 addStat(HERO, stat, r[stat])
             }
         }
