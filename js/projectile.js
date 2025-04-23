@@ -14,7 +14,7 @@ export class Projectile extends Object {
     life
     time
     damage
-    sound = newAudio(null, 0.01)
+    sound
 
     update() {
         this.position.x += this.velocity.x
@@ -27,13 +27,15 @@ export class Projectile extends Object {
         CTX.fillRect(this.left, this.top, this.width, this.height)
     }
 
-    constructor(x, y, w, h, l, c = "red", d = 1) {
+    constructor(x, y, w, h, l, c = "red", d = 1, s) {
         super(x, y, w, h)
 
         this.life = l
         this.color = c
         this.damage = d
         this.time = performance.now()
+
+        if (s) this.sound = newAudio(null, 0.01)
     }
 }
 

@@ -1,6 +1,6 @@
 'use strict'
 
-import { DEBUG, MS_PER_FRAME, CANVAS, CTX, keyClasses, randInt, clearCanvas, newImg, cloneArray, newAudio } from "./globals.js"
+import { DEBUG, MS_PER_FRAME, CANVAS, CTX, keyClasses, randInt, clearCanvas, newImg, cloneArray, newAudio, version } from "./globals.js"
 import { Ship, Player, Enemies, enemyClasses } from "./player.js"
 import { Projectiles, checkCollision } from "./projectile.js"
 import { Levels } from "./levels.js"
@@ -110,19 +110,21 @@ function countDown() {
 
 // Image initiations
 
-const heartImgs = {
+const Imgs = {
     heart: newImg("heart.png"),
     heart_half: newImg("heart_half.png"),
     heart_empty: newImg("heart_empty.png"),
     armor: newImg("armor.png"),
     armor_half: newImg("armor_half.png"),
-    armor_empty: newImg("armor_empty.png")
+    armor_empty: newImg("armor_empty.png"),
+    auto: newImg("auto.png")
 }
 
 let HeartScale = 4
 let HeartSize = 128
 let ArmorScale = 1.68
 let ArmorSize = 54
+let AutoScale = powerupClasses.auto.scale
 
 function newHeart(i, state = "heart", xo, yo, scale) {
     let size = HeartSize
@@ -130,7 +132,7 @@ function newHeart(i, state = "heart", xo, yo, scale) {
 
     const s = (size / scale)
 
-    CTX.drawImage(heartImgs[state], 0, 0, size, size, ((i * s) + xo), (((CANVAS.height) - s) + yo), s, s)
+    CTX.drawImage(Imgs[state], 0, 0, size, size, ((i * s) + xo), (((CANVAS.height) - s) + yo), s, s)
 }
 
 function drawHP(xo = 0, yo = 0) {
@@ -216,10 +218,11 @@ function update() {
     for (const c in level.powerUps) {
         const d = powerupClasses[c]
 
-        if (!d) return
+        if (!d) return // Non-existent power-up class
 
         if (randInt(1, level.powerUps[c]) == 1) {
-            const p = new Powerup(c, randInt(d.smin, d.smax), d.score, randInt(50, (CANVAS.width - 50)), randInt(50, 250), d.w, d.h, d.scale)
+            const set = ((d.smin) && randInt(d.smin, d.smax)) || d.s // If we have a min and max setter, then choose a random between them else the base setter
+            const p = new Powerup(c, set, d.score, randInt(50, (CANVAS.width - 50)), randInt(50, 250), d.w, d.h, d.scale, d.dur)
 
             Powerups.push(p)
         }
@@ -234,18 +237,34 @@ function update() {
         let pi = 0
         for (const p of Projectiles) {
             if (p.player) {
-                if (checkCollision(u, p)) {
-                    if (HERO[u.type] != null) {
+                if (checkCollision(u, p)) { // Projectile belongs to a player and hit a power-up
+                    const t = u.type
+
+                    if (HERO[t] != null) { // Stat based power-up
                         ding.play()
     
-                        if (HERO[u.type] < 0) HERO[u.type] = 0
+                        let n = u.set
+                        if (typeof(HERO[t]) == "number") { // Only ensure these if it's a 'number' type
+                            if (HERO[t] < 0) HERO[t] = 0
     
-                        let n = (HERO[u.type] + u.strength)
-    
-                        if (n > maxes[u.type]) n = maxes[u.type]
-    
-                        HERO[u.type] = n
+                            n += HERO[t]
+        
+                            if (n > maxes[t]) n = maxes[t]
+                        }
+                       
+                        if (u.dur) { // Has a duration
+                            const old = HERO[t]
+
+                            setTimeout(function() {
+                                HERO[t] = old
+                            }, (u.dur * 1000))
+                        }
+
+                        HERO[t] = n
                         SCORE += u.score    
+                    }
+                    else { // Isn't a power-up based on a stat
+
                     }
     
                     Powerups.splice(pui, 1)
@@ -260,10 +279,10 @@ function update() {
     // create bad guys
 
     for (const nm in level.enemyCounts) {
-        if (level.enemiesSpawned[nm] < level.enemyCounts[nm]) {
+        if (level.enemiesSpawned[nm] < level.enemyCounts[nm]) { // Have all enemies spawned yet
             const c = enemyClasses[nm]
 
-            if (!c) return
+            if (!c) return // Non-existent enemy class
 
             const e = new Ship(nm, randInt(100, (CANVAS.width - 100)), randInt(50, 250), c.w, c.h, c.hp, c.xs, c.ys, c.sdata, c.scale, c.src)
             Enemies.push(e)
@@ -364,6 +383,13 @@ function update() {
         drawArmor(0, -(HeartSize / HeartScale))
     }  
 
+    // handle auto
+
+    if (HERO.auto) {
+        HERO.shoot()
+        CTX.drawImage(Imgs.auto, 0, 0, 275, 1274, (((HeartSize / HeartScale) * 5) + 10), (CANVAS.height - 80), (275 / AutoScale), (1274 / AutoScale))
+    }
+
     // draw level
 
     CTX.font = "40px Courier New"
@@ -433,6 +459,10 @@ function update() {
         globalThis.HERO = HERO
         globalThis.Projectiles = Projectiles
         globalThis.Enemies = Enemies
+        globalThis.Powerups = Powerups
+
+        CTX.fillStyle = "red"
+        CTX.fillText("DEBUG MODE", 0, 35, 200)
     }
 }
 
@@ -451,10 +481,10 @@ function spritescreen() {
     CTX.font = "40px Courier New"
     CTX.fillText("Mars Rescue Mission", (CANVAS.width / 2) - 185, (CANVAS.height / 2), 400)
     CTX.font = "20px Courier New"
-    CTX.fillText("Remastered", (CANVAS.width / 2) - 50, (CANVAS.height / 2) + 25, 400)
+    CTX.fillText(`Remastered v${version}`, (CANVAS.width / 2) - 75, (CANVAS.height / 2) + 25, 400)
 
     CTX.font = "25px Courier New"
-    CTX.fillText("Press Space to play", (CANVAS.width / 2) - 130, (CANVAS.height / 2) + 100, 400)
+    CTX.fillText("Press Space to play", (CANVAS.width / 2) - 135, (CANVAS.height / 2) + 100, 400)
 
     CTX.font = "25px Courier New"
     CTX.fillText("©2025 Passionyte", (CANVAS.width / 2) - 110, CANVAS.height - 50, 400)

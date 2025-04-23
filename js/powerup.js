@@ -2,7 +2,7 @@ import { CTX, Object, newImg, DEBUG, CANVAS } from "./globals.js"
 
 export const Powerups = []
 
-export const powerupClasses = { //  'smin' Minimum strength of the power-up, 'smax' Maximum strength of the power-up
+export const powerupClasses = { //  'smin' Minimum strength of the power-up, 'smax' Maximum strength of the power-up, 's' base strength, 'dur' duration of the powerup
     hp: {
         w: 128,
         h: 128,
@@ -20,6 +20,14 @@ export const powerupClasses = { //  'smin' Minimum strength of the power-up, 'sm
         smax: 4,
         score: 5
     },
+    auto: {
+        w: 275,
+        h: 1274,
+        s: true,
+        dur: 12,
+        scale: 16,
+        score: 25
+    }
 }
 
 export class Powerup extends Object {
@@ -50,12 +58,13 @@ export class Powerup extends Object {
         CTX.drawImage(this.img, 0, 0, this.size.w, this.size.h, this.left, this.top, this.width, this.height)
     }
 
-    constructor(type, strength, score, x, y, w, h, scale) {
+    constructor(type, set, score, x, y, w, h, scale, dur) {
         super(x, y, w, h, scale)
 
         this.type = type
-        this.strength = strength
+        this.set = set
         this.img = newImg(`${powerupClasses[type].img || type}.png`)
+        this.dur = dur
         this.score = score
     }
 }

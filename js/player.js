@@ -119,18 +119,26 @@ export class Ship extends Object {
     shoot() {
         const NOW = performance.now()
         const s = this.sdata
-        if (!s || ((NOW - this.last_shot) < s.cooldown)) return
+
+        if (!s || ((NOW - this.last_shot) < (s.cooldown * 1000))) return
 
         this.last_shot = NOW
 
         const yo = ((s.inverted) && -25) || 25
-        const spread = (((s.spreadmin != null) && (this.width * (randInt(s.spreadmin, s.spreadmax) / 100) - (this.width / 2)) || 0))
-        const p = new Projectile((this.position.x + spread), (this.position.y + yo), 6, 12, s.life, s.color, s.damage)
-        p.sound.play()
-        p.velocity.y = ((s.inverted) && -s.speed) || s.speed
-        p.player = (this.type == "Player")
+        const fromPlr = (this.type == "Player")
+        const b = ((s.bullets) && s.bullets) || 1   
 
-        Projectiles.push(p)
+        let p
+
+        for (let i = 0; (i < b); i++) {
+            const spread = (((s.spreadmin != null) && (this.width * (randInt(s.spreadmin, s.spreadmax) / 100) - (this.width / 2)) || 0))
+            p = new Projectile((this.position.x + spread), (this.position.y + yo), 6, 12, s.life, s.color, s.damage, (i == 0))
+
+            if (i == 0) p.sound.play()
+            p.velocity.y = ((s.inverted) && -s.speed) || s.speed
+            p.player = fromPlr
+            Projectiles.push(p)
+        }
     }
 
     update() {
@@ -195,12 +203,13 @@ export class Player extends Ship {
             life: 1,
             inverted: true,
             color: "red",
-            damage: 1
+            damage: 1,
         }
 
         super("Player", x, y, w, h, hp, 7, 0, sdata, 4, "ship.png")
 
-        this.armor = ar
+        this.auto = false // Auto firing for a powerup
+        this.armor = ar // NPC ships can not have armor
     }
 }
 
