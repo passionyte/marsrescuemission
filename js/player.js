@@ -78,7 +78,7 @@ export const enemyClasses = {
         h: 698,
         hp: 3,
         xs: 3,
-        ys: 2,
+        ys: 1,
         scale: 10,
         sdata: {
             cooldown: 0.4,
@@ -94,7 +94,7 @@ export const enemyClasses = {
         hp: 10,
         xs: 3,
         ys: 0,
-        scale: 2,
+        scale: 2.5,
         sdata: {
             cooldown: 0.15,
             damage: 2,
@@ -104,6 +104,32 @@ export const enemyClasses = {
             spreadmin: 0,
             spreadmax: 100
         }
+    },
+    spectral: {
+        w: 645,
+        h: 456,
+        hp: 1,
+        xs: -3,
+        ys: 0,
+        scale: 8,
+        sdata: {
+            cooldown: 1.5,
+            damage: 1,
+            color: "pink",
+            speed: 14,
+            life: 1,
+            bullets: 4,
+            spreadmin: -100,
+            spreadmax: 200
+        }
+    },
+    ghost: {
+        w: 645,
+        h: 456,
+        hp: 1,
+        xs: -5,
+        ys: 4,
+        scale: 8
     }
 }
 
@@ -210,6 +236,22 @@ export class Player extends Ship {
 
         this.auto = false // Auto firing for a powerup
         this.armor = ar // NPC ships can not have armor
+    }
+}
+
+export function addStat(s, nm, x, max = 10) {
+    if (s[nm]) {
+        let a = (s[nm] + x)
+
+        if (a < 0) {
+            a = 0
+        }
+
+        if (a > max) {
+            a = max
+        }
+
+        s[nm] = a
     }
 }
 

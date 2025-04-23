@@ -2,9 +2,10 @@ class Level {
     enemyCounts = {}
     enemiesSpawned = {}
 
-    constructor(e, p) {
+    constructor(e, p, r) {
         this.enemyCounts = e
         this.powerUps = p
+        this.rewards = r
 
         for (const nm in e) {
             this.enemiesSpawned[nm] = 0
@@ -12,7 +13,7 @@ class Level {
     }
 }
 
-export const Levels = { // First array is enemies, second array is power-ups
+export const Levels = { // First array is enemies, second array is power-ups, third array is rewards
     1: new Level(
         {
             generic: 10
@@ -118,6 +119,31 @@ export const Levels = { // First array is enemies, second array is power-ups
             hp: 650,
             armor: 850,
             auto: 900
+        },
+        {
+            hp: 4,
+            armor: 4
+        }
+    ),
+    11: new Level(
+        {
+            spectral: 5
+        },
+        {
+            hp: 500,
+            armor: 750,
+            auto: 1000
+        }
+    ),
+    12: new Level(
+        {
+            spectral: 3,
+            ghost: 2
+        },
+        {
+            hp: 600,
+            armor: 800,
+            auto: 950
         }
     )
 }

@@ -1,7 +1,7 @@
 'use strict'
 
 import { DEBUG, MS_PER_FRAME, CANVAS, CTX, keyClasses, randInt, clearCanvas, newImg, cloneArray, newAudio, version } from "./globals.js"
-import { Ship, Player, Enemies, enemyClasses } from "./player.js"
+import { Ship, Player, Enemies, enemyClasses, addStat } from "./player.js"
 import { Projectiles, checkCollision } from "./projectile.js"
 import { Levels } from "./levels.js"
 import { Powerup, powerupClasses, Powerups } from "./powerup.js"
@@ -117,7 +117,8 @@ const Imgs = {
     armor: newImg("armor.png"),
     armor_half: newImg("armor_half.png"),
     armor_empty: newImg("armor_empty.png"),
-    auto: newImg("auto.png")
+    auto: newImg("auto.png"),
+    bg: newImg("bg.png")
 }
 
 let HeartScale = 4
@@ -206,6 +207,9 @@ function update() {
     // Clear the canvas
     clearCanvas()
 
+    // draw background
+    CTX.drawImage(Imgs.bg, 0, 0, 600, 800, 0, 0, CANVAS.width, CANVAS.height)
+
     if (sudoPAUSED) {
         CTX.font = "50px Courier New"
         CTX.fillStyle = "white"
@@ -242,16 +246,7 @@ function update() {
 
                     if (HERO[t] != null) { // Stat based power-up
                         ding.play()
-    
-                        let n = u.set
-                        if (typeof(HERO[t]) == "number") { // Only ensure these if it's a 'number' type
-                            if (HERO[t] < 0) HERO[t] = 0
-    
-                            n += HERO[t]
-        
-                            if (n > maxes[t]) n = maxes[t]
-                        }
-                       
+
                         if (u.dur) { // Has a duration
                             const old = HERO[t]
 
@@ -259,9 +254,16 @@ function update() {
                                 HERO[t] = old
                             }, (u.dur * 1000))
                         }
-
-                        HERO[t] = n
-                        SCORE += u.score    
+    
+                        let n = u.set
+                        if (typeof(HERO[t]) == "number") { // Only call 'addStat' if the stat is a 'number' type
+                            addStat(HERO, t, n)
+                        }
+                        else {
+                            HERO[t] = n
+                        }
+                        
+                        if (u.score) SCORE += u.score
                     }
                     else { // Isn't a power-up based on a stat
 
@@ -400,7 +402,7 @@ function update() {
 
     CTX.font = "40px Courier New"
     CTX.fillStyle = "white"
-    CTX.fillText(SCORE, (CANVAS.width - 50), CANVAS.height, 200)
+    CTX.fillText(SCORE, (CANVAS.width - 50), (CANVAS.height - 5), 200)
 
     // do lose condition
 
@@ -414,6 +416,7 @@ function update() {
 
         CTX.fillStyle = "white"
         CTX.fillText(`Score: ${SCORE}`, (CANVAS.width / 2) - 100, (CANVAS.height / 2) + 85, 200)
+        CTX.fillText(`Level: ${lnum}`, (CANVAS.width / 2) - 100, (CANVAS.height / 2) + 175, 200)
     }
 
     // do win condition
@@ -421,6 +424,13 @@ function update() {
     if (Enemies.length == 0) {
         PAUSED = true
         clearCanvas()
+
+        const r = level.rewards
+        if (r) {
+            for (const stat in r) {
+                addStat(HERO, stat, r[stat])
+            }
+        }
         
         lnum++
         nextlvl = Levels[lnum]
@@ -439,7 +449,7 @@ function update() {
             CTX.fillText("You win!", (CANVAS.width / 2) - 100, (CANVAS.height / 2), 200)
 
             if (HERO.hp == maxes.hp) {
-                CTX.fillText("Perfect!", (CANVAS.width / 2) - 105, (CANVAS.height / 2) + 100, 200)
+                CTX.fillText("Perfect!", (CANVAS.width / 2) - 100, (CANVAS.height / 2) + 100, 200)
             }
             else {
                 CTX.fillStyle = "white"
