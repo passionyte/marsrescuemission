@@ -261,14 +261,13 @@ export class Player extends Ship {
 
 export function addStat(s, nm, x, max = 10) {
     if (s[nm] != null) {
-        if (s[nm] < 0) s[nm] = 0
-
         let a = (s[nm] + x)
 
         if (a > max) a = max
 
-        console.log(`setting ${nm} to ${a}`)
         s[nm] = a
+
+        if (s[nm] < 0) s[nm] = 0
     }
 }
 

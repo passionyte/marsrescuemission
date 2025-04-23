@@ -332,11 +332,11 @@ function update() {
                 if (checkCollision(HERO, p)) {
                     if (HERO.armor <= 0) {
                         newAudio("pop.wav", 0.05).play()
-                        HERO.hp -= p.damage
+                        addStat(HERO, "hp", -p.damage)
                     }
                     else {
                         newAudio("block.mp3", 0.1).play()
-                        HERO.armor -= p.damage
+                        addStat(HERO, "armor", -p.damage)
                     }
                     
                     Projectiles.splice(pi, 1)
