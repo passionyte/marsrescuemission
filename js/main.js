@@ -336,6 +336,7 @@ function update() {
                     if (checkCollision(e, p)) {
                         e.hp -= p.damage
                         Projectiles.splice(pi, 1)
+                        break // Prevents a projectile from wiping out potentially multiple bad guys
                     }
                 }
             }
