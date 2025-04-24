@@ -13,3 +13,8 @@ body {
 canvas {
     background-color: black
 }
+
+@font-face {
+    font-family: PressStart2P;
+    src: url("./PressStart2P-Regular.ttf")
+}
