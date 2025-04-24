@@ -38,7 +38,10 @@ export const enemyClasses = {
         sdata: {
             cooldown: 1,
             damage: 1,
-            color: "skyblue",
+            color: [
+                "skyblue",
+                "red"
+            ],
             speed: 6,
             life: 2
         }
@@ -53,7 +56,10 @@ export const enemyClasses = {
         sdata: {
             cooldown: 0.1,
             damage: 1,
-            color: "yellow",
+            color: [
+                "yellow",
+                "orange"
+            ],
             speed: 32,
             life: 0.14
         }
@@ -68,7 +74,10 @@ export const enemyClasses = {
         sdata: {
             cooldown: 0.5,
             damage: 1,
-            color: "pink",
+            color: [
+                "pink",
+                "purple"
+            ],
             speed: 10,
             life: 1
         }
