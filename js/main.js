@@ -83,14 +83,14 @@ function countDown() {
     clearCanvas()
 
     CTX.textAlign = "center"
-    
+
     CTX.font = "50px PressStart2P"
     CTX.fillStyle = "white"
-    CTX.fillText(`Clear! Incoming: Level ${lnum}`, (CANVAS.width / 2) - 200, (CANVAS.height / 2), 400)
+    CTX.fillText(`Clear! Incoming: Level ${lnum}`, (CANVAS.width / 2), (CANVAS.height / 2), 400)
 
     CTX.font = "30px PressStart2P"
     CTX.fillStyle = "yellow"
-    CTX.fillText(`${(3 - cdsecs)}...`, (CANVAS.width / 2) - 10, (CANVAS.height / 2) + 50, 200)
+    CTX.fillText(`${(3 - cdsecs)}...`, (CANVAS.width / 2), (CANVAS.height / 2) + 50, 200)
 
     if (cdsecs == 3) {
         clearInterval(cd)
