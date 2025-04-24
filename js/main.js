@@ -16,7 +16,7 @@ const maxes = {
 }
 
 export const HERO = new Player((CANVAS.width / 2), (CANVAS.height - 100), 388, 299, maxes.hp, 0)
-let lnum = 16
+let lnum = 1
 let level = Levels[lnum]
 let SCORE = 0
 let cdsecs = 0
