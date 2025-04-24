@@ -81,6 +81,9 @@ function input() {
 
 function countDown() {
     clearCanvas()
+
+    CTX.textAlign = "center"
+    
     CTX.font = "50px PressStart2P"
     CTX.fillStyle = "white"
     CTX.fillText(`Clear! Incoming: Level ${lnum}`, (CANVAS.width / 2) - 200, (CANVAS.height / 2), 400)
@@ -205,9 +208,10 @@ function update() {
     CTX.drawImage(Imgs.bg, 0, 0, 600, 800, 0, 0, CANVAS.width, CANVAS.height)
 
     if (sudoPAUSED) {
+        CTX.textAlign = "center"
         CTX.font = "50px PressStart2P"
         CTX.fillStyle = "white"
-        CTX.fillText("Paused", (CANVAS.width / 2) - 100, (CANVAS.height / 2), 200)
+        CTX.fillText("Paused", (CANVAS.width / 2), (CANVAS.height / 2), 200)
         return
     }
 
@@ -396,15 +400,17 @@ function update() {
 
     // draw level
 
+    CTX.textAlign = "left"
     CTX.font = "30px PressStart2P"
     CTX.fillStyle = "yellow"
     CTX.fillText(`Lvl: ${lnum}`, 0, (CANVAS.height - (128 / HeartScale)) - ((hasArmor) && (ArmorSize / ArmorScale)) || 0, 200)
 
     // draw score
 
+    CTX.textAlign = "right"
     CTX.font = "30px PressStart2P"
     CTX.fillStyle = "white"
-    CTX.fillText(SCORE, (CANVAS.width - 100), (CANVAS.height - 5), 200)
+    CTX.fillText(SCORE, CANVAS.width, (CANVAS.height - 5), 200)
 
     // do lose condition
 
@@ -412,13 +418,15 @@ function update() {
         PAUSED = true
         clearCanvas()
 
+        CTX.textAlign = "center"
+
         CTX.font = "40px PressStart2P"
         CTX.fillStyle = "red"
-        CTX.fillText("You died!", (CANVAS.width / 2) - 100, (CANVAS.height / 2), 200)
+        CTX.fillText("You died!", (CANVAS.width / 2), (CANVAS.height / 2), 200)
 
         CTX.fillStyle = "white"
-        CTX.fillText(`Score: ${SCORE}`, (CANVAS.width / 2) - 100, (CANVAS.height / 2) + 85, 200)
-        CTX.fillText(`Level: ${lnum}`, (CANVAS.width / 2) - 100, (CANVAS.height / 2) + 175, 200)
+        CTX.fillText(`Score: ${SCORE}`, (CANVAS.width / 2), (CANVAS.height / 2) + 85, 200)
+        CTX.fillText(`Level: ${lnum}`, (CANVAS.width / 2), (CANVAS.height / 2) + 175, 200)
     }
 
     // do win condition
@@ -438,30 +446,31 @@ function update() {
         nextlvl = Levels[lnum]
         Projectiles.splice(0, Projectiles.length)
 
+        CTX.textAlign = "center"
+        CTX.font = "40px PressStart2P"
+
         if (nextlvl) {
-            CTX.font = "40px PressStart2P"
             CTX.fillStyle = "white"
-            CTX.fillText(`Clear! Incoming: Level ${lnum}`, (CANVAS.width / 2) - 200, (CANVAS.height / 2), 400)
+            CTX.fillText(`Clear! Incoming: Level ${lnum}`, (CANVAS.width / 2), (CANVAS.height / 2), 400)
 
             cd = setInterval(countDown, ((!DEBUG) && 1000) || 1)
         }
         else {
-            CTX.font = "40px PressStart2P"
             CTX.fillStyle = "green"
-            CTX.fillText("You win!", (CANVAS.width / 2) - 100, (CANVAS.height / 2), 200)
+            CTX.fillText("You win!", (CANVAS.width / 2), (CANVAS.height / 2), 200)
 
             if (HERO.hp == maxes.hp) {
-                CTX.fillText("Perfect!", (CANVAS.width / 2) - 100, (CANVAS.height / 2) + 100, 200)
+                CTX.fillText("Perfect!", (CANVAS.width / 2), (CANVAS.height / 2) + 100, 200)
             }
             else {
                 CTX.fillStyle = "white"
-                CTX.fillText("HP remaining:", (CANVAS.width / 2) - 95, (CANVAS.height / 2) + 80, 200)
+                CTX.fillText("HP remaining:", (CANVAS.width / 2), (CANVAS.height / 2) + 80, 200)
 
                 drawHP((CANVAS.width / 2) - 85, -250)
             }
 
             CTX.fillStyle = "white"
-            CTX.fillText(`Score: ${SCORE}`, (CANVAS.width / 2) - 100, (CANVAS.height / 2) + 235, 200)
+            CTX.fillText(`Score: ${SCORE}`, (CANVAS.width / 2), (CANVAS.height / 2) + 235, 200)
         }
     }
 
@@ -473,6 +482,7 @@ function update() {
         globalThis.Enemies = Enemies
         globalThis.Powerups = Powerups
 
+        CTX.textAlign = "left"
         CTX.fillStyle = "red"
         CTX.fillText("DEBUG MODE", 0, 35, 200)
     }
@@ -490,16 +500,19 @@ function startgame(ev) {
 function spritescreen() {
     CTX.fillStyle = "white"
 
+    CTX.textAlign = "center"
+
     CTX.font = "30px PressStart2P"
-    CTX.fillText("Mars Rescue Mission", (CANVAS.width / 2) - 185, (CANVAS.height / 2), 400)
+    CTX.fillText("Mars Rescue Mission", (CANVAS.width / 2), (CANVAS.height / 2), 400)
+    
     CTX.font = "10px PressStart2P"
-    CTX.fillText(`Remastered v${version}`, (CANVAS.width / 2) - 100, (CANVAS.height / 2) + 25, 400)
+    CTX.fillText(`Remastered v${version}`, (CANVAS.width / 2), (CANVAS.height / 2) + 25, 400)
 
     CTX.font = "15px PressStart2P"
-    CTX.fillText("Press Space to play", (CANVAS.width / 2) - 135, (CANVAS.height / 2) + 100, 400)
+    CTX.fillText("Press Space to play", (CANVAS.width / 2), (CANVAS.height / 2) + 100, 400)
 
     CTX.font = "15px PressStart2P"
-    CTX.fillText("©2025 Passionyte", (CANVAS.width / 2) - 120, CANVAS.height - 50, 400)
+    CTX.fillText("©2025 Passionyte", (CANVAS.width / 2), CANVAS.height - 50, 400)
 
     document.addEventListener("keydown", startgame)
 }
