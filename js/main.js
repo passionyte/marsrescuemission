@@ -423,10 +423,11 @@ function update() {
 
         CTX.textAlign = "center"
 
-        CTX.font = "40px PressStart2P"
+        CTX.font = "45px PressStart2P"
         CTX.fillStyle = "red"
         CTX.fillText("You died!", (CANVAS.width / 2), (CANVAS.height / 2), 200)
 
+        CTX.font = "40px PressStart2P"
         CTX.fillStyle = "white"
         CTX.fillText(`Score: ${SCORE}`, (CANVAS.width / 2), (CANVAS.height / 2) + 85, 200)
         CTX.fillText(`Level: ${lnum}`, (CANVAS.width / 2), (CANVAS.height / 2) + 175, 200)
@@ -459,8 +460,11 @@ function update() {
             cd = setInterval(countDown, ((!DEBUG) && 1000) || 1)
         }
         else {
+            CTX.font = "45px PressStart2P"
             CTX.fillStyle = "green"
             CTX.fillText("You win!", (CANVAS.width / 2), (CANVAS.height / 2), 200)
+
+            CTX.font = "40px PressStart2P"
 
             if (HERO.hp == maxes.hp) {
                 CTX.fillText("Perfect!", (CANVAS.width / 2), (CANVAS.height / 2) + 100, 200)

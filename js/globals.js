@@ -7,7 +7,7 @@ export const MS_PER_FRAME = (1000 / FPS)
 
 const useRaw = (document.URL.includes("passionyte.github.io/marsrescuemission"))
 
-export const version = `1.6${((!useRaw) && " [DEV]") || ""}` 
+export const version = `1.6.1${((!useRaw) && " [DEV]") || ""}` 
 
 export const Url = ((!useRaw) && "../") || "https://raw.githubusercontent.com/passionyte/marsrescuemission/refs/heads/main/"
 
