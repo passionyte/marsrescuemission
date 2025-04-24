@@ -210,7 +210,7 @@ export const Levels = { // First array is enemies, second array is power-ups, th
     ),
     16: new Level(
         {
-            darkblue: 3,
+            darkblue: 1,
             purple: 1
         },
         {

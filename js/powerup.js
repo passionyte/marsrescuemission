@@ -7,8 +7,8 @@ export const powerupClasses = { //  'smin' Minimum strength of the power-up, 'sm
         w: 128,
         h: 128,
         scale: 2,
-        smin: 1,
-        smax: 2,
+        smin: 2,
+        smax: 4,
         img: "heart",
         score: 10
     },
@@ -16,7 +16,7 @@ export const powerupClasses = { //  'smin' Minimum strength of the power-up, 'sm
         w: 54,
         h: 54,
         scale: 1,
-        smin: 1,
+        smin: 2,
         smax: 4,
         score: 5
     },

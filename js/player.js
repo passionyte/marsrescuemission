@@ -159,7 +159,7 @@ export const enemyClasses = {
                 "yellow"
             ],
             speed: 22,
-            life: 0.4,
+            life: 0.5,
             bullets: 5,
             spreadmin: -100,
             spreadmax: 200
@@ -174,11 +174,11 @@ export const enemyClasses = {
         ys: 1,
         scale: 1.5,
         sdata: {
-            cooldown: 0.1,
+            cooldown: 0.12,
             damage: 1,
             color: "blue",
-            speed: 4,
-            life: 2,
+            speed: 10,
+            life: 1,
             spreadmin: 0,
             spreadmax: 100
         },
@@ -196,7 +196,7 @@ export const enemyClasses = {
             damage: 5,
             color: "purple",
             speed: 40,
-            life: 0.2,
+            life: 0.33  ,
         },
         score: 3
     }
@@ -250,13 +250,16 @@ export class Ship extends Object {
             return
         }
 
-        if (ny >= (CANVAS.height - h) || ny <= h) {
+        this.position.x = nx
+
+        if (ny >= (CANVAS.height - h)) {
             if (this.type != "Player") HERO.hp = 0
 
             return
         }
 
-        this.position.x = nx
+        if (ny <= h) return
+
         this.position.y = ny
     }
 
