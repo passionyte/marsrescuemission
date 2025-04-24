@@ -18,3 +18,39 @@ canvas {
     font-family: PressStart2P;
     src: url("./PressStart2P-Regular.ttf")
 }
+
+a {
+    font-family: PressStart2P
+}
+
+.title {
+    font-size: 1vw;
+}
+
+.subtitle {
+    font-size: 0.5vw;
+}
+
+.centertext {
+    text-align: center;
+    justify-content: center;
+    display: block;
+}
+
+footer { 
+    font-family: PressStart2P;
+    color: rgb(220, 220, 220);
+    width: 100%; 
+    font-size: 0.5vw; 
+    display: block; 
+    position: fixed; 
+    bottom: 0; left: 0; 
+    background-color: rgb(19, 19, 19); 
+    text-align: left; 
+    margin: auto; 
+    padding: 0.5vw; 
+    font-weight: bold; 
+    border-color: rgb(31, 31, 31);
+    border-style: solid;
+    border-width: thick;
+ }
