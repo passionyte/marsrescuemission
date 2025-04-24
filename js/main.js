@@ -354,6 +354,8 @@ function update() {
                     else {
                         newAudio("block.mp3", 0.1).play()
                         addStat(HERO, "armor", -p.damage)
+
+                        if (HERO.armor <= 0) newAudio("break.mp3", 0.1).play()
                     }
                     
                     Projectiles.splice(pi, 1)

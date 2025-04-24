@@ -98,12 +98,12 @@ export const enemyClasses = {
         }
     },
     boss: {
-        w: 498,
-        h: 219,
+        w: 123,
+        h: 57,
         hp: 10,
         xs: 3,
         ys: 0,
-        scale: 2.5,
+        scale: 1,
         bar: true,
         barcolor: "red",
         score: 100,
@@ -159,11 +159,46 @@ export const enemyClasses = {
                 "yellow"
             ],
             speed: 22,
-            life: 0.33,
+            life: 0.4,
             bullets: 5,
             spreadmin: -100,
             spreadmax: 200
-        }
+        },
+        score: 2
+    },
+    darkblue: {
+        w: 120,
+        h: 80,
+        hp: 3,
+        xs: 6,
+        ys: 1,
+        scale: 1.5,
+        sdata: {
+            cooldown: 0.1,
+            damage: 1,
+            color: "blue",
+            speed: 4,
+            life: 2,
+            spreadmin: 0,
+            spreadmax: 100
+        },
+        score: 5
+    },
+    purple: {
+        w: 82,
+        h: 81,
+        hp: 4,
+        xs: 2,
+        ys: -1,
+        scale: 1.2,
+        sdata: {
+            cooldown: 3.5,
+            damage: 5,
+            color: "purple",
+            speed: 40,
+            life: 0.2,
+        },
+        score: 3
     }
 }
 
