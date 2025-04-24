@@ -144,12 +144,16 @@ export const enemyClasses = {
         sdata: {
             cooldown: 2,
             damage: 1,
-            color: "orange",
+            color: [
+                "orange",
+                "red",
+                "yellow"
+            ],
             speed: 22,
             life: 0.33,
             bullets: 5,
-            spreadmin: -200,
-            spreadmax: 300
+            spreadmin: -100,
+            spreadmax: 200
         }
     }
 }
@@ -177,7 +181,8 @@ export class Ship extends Object {
 
         for (let i = 0; (i < b); i++) {
             const spread = (((s.spreadmin != null) && (this.width * (randInt(s.spreadmin, s.spreadmax) / 100) - (this.width / 2)) || 0))
-            const p = new Projectile((this.position.x + spread), (this.position.y + yo), 6, 12, s.life, s.color, s.damage, (i == 0))
+            const c = ((typeof(s.color) == "string") && s.color) || s.color[(randInt(1, s.color.length) - 1)]
+            const p = new Projectile((this.position.x + spread), (this.position.y + yo), 6, 12, s.life, c, s.damage, (i == 0))
 
             if (i == 0) p.sound.play()
             p.velocity.y = ((s.inverted) && -s.speed) || s.speed

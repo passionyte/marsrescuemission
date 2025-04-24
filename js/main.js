@@ -115,7 +115,8 @@ const Imgs = {
     armor_half: newImg("armor_half.png"),
     armor_empty: newImg("armor_empty.png"),
     auto: newImg("auto.png"),
-    bg: newImg("bg.png")
+    bg: newImg("bg.png"),
+    speed: newImg("speed.png")
 }
 
 let HeartScale = 4
@@ -395,7 +396,7 @@ function update() {
 
     if (HERO.auto) {
         HERO.shoot()
-        CTX.drawImage(Imgs.auto, 0, 0, 275, 1274, (((HeartSize / HeartScale) * 5) + 10), (CANVAS.height - 80), (275 / AutoScale), (1274 / AutoScale))
+        // CTX.drawImage(Imgs.auto, 0, 0, 275, 1274, (((HeartSize / HeartScale) * 5) + 10), (CANVAS.height - 80), (275 / AutoScale), (1274 / AutoScale))
     }
 
     // draw level

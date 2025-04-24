@@ -20,6 +20,7 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         },
         {
             armor: 1400,
+            xspeed: 2000
         }
     ),
     2: new Level(
@@ -28,7 +29,8 @@ export const Levels = { // First array is enemies, second array is power-ups, th
             blue: 4
         },
         {
-            armor: 300
+            armor: 1300,
+            xspeed: 1800,
         }
     ),
     3: new Level(
@@ -38,7 +40,8 @@ export const Levels = { // First array is enemies, second array is power-ups, th
             pink: 2
         },
         {
-            armor: 1250
+            armor: 1250,
+            xspeed: 1600
         }
     ),
     4: new Level(
@@ -50,7 +53,8 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         {
             hp: 1250,
             armor: 1200,
-            auto: 2000
+            auto: 2000,
+            xspeed: 1500
         }
     ),
     5: new Level(
@@ -63,7 +67,8 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         {
             hp: 1000,
             armor: 1150,
-            auto: 1500
+            auto: 1500,
+            xspeed: 1300,
         },
         {
             armor: 2
@@ -78,7 +83,8 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         {
             hp: 900,
             armor: 1100,
-            auto: 1400
+            auto: 1400,
+            xspeed: 1250
         }
     ),
     7: new Level(
@@ -91,7 +97,8 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         {
             hp: 800,
             armor: 1050,
-            auto: 1300
+            auto: 1300,
+            xspeed: 1200
         }
     ),
     8: new Level(
@@ -102,7 +109,8 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         {
             hp: 750,
             armor: 1000,
-            auto: 1250
+            auto: 1250,
+            xspeed: 1150
         }
     ),
     9: new Level(
@@ -112,7 +120,8 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         {
             hp: 700,
             armor: 900,
-            auto: 1100
+            auto: 1100,
+            xspeed: 1100
         }
     ),
     10: new Level(
@@ -122,7 +131,8 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         {
             hp: 650,
             armor: 850,
-            auto: 900
+            auto: 900,
+            xspeed: 1000
         },
         {
             hp: 4,
@@ -136,7 +146,8 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         {
             hp: 500,
             armor: 750,
-            auto: 1000
+            auto: 1000,
+            xspeed: 950
         }
     ),
     12: new Level(
@@ -147,7 +158,8 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         {
             hp: 600,
             armor: 800,
-            auto: 950
+            auto: 950,
+            xspeed: 900
         }
     ),
     13: new Level(
@@ -159,7 +171,8 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         {
             hp: 550,
             armor: 750,
-            auto: 900
+            auto: 900,
+            xspeed: 850
         }
     ),
     14: new Level(
@@ -171,7 +184,8 @@ export const Levels = { // First array is enemies, second array is power-ups, th
         {
             hp: 500,
             armor: 700,
-            auto: 850
+            auto: 850,
+            xspeed: 800
         }
     ),
 

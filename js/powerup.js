@@ -24,9 +24,19 @@ export const powerupClasses = { //  'smin' Minimum strength of the power-up, 'sm
         w: 275,
         h: 1274,
         s: true,
-        dur: 12,
+        dur: 10,
         scale: 16,
         score: 25
+    },
+    xspeed: {
+        w: 272,
+        h: 449,
+        dur: 10,
+        scale: 6,
+        smin: 3,
+        smax: 6,
+        img: "speed",
+        score: 15
     }
 }
 
