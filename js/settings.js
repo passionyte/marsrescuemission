@@ -21,7 +21,7 @@ class Setting {
 export const Settings = [ // Default settings
     new Setting("Alternate Countdown", "QOL", false),
     new Setting("Music", "Audio", true, function() {
-        globalThis.Music.playing = !(globalThis.Music.playing)
+        globalThis.Music.volume = ((globalThis.Music.volume == 0) && 0.025) || 0
     })
 ]
 
