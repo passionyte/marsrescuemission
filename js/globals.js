@@ -1,13 +1,17 @@
+// Passionyte 2025
+
+'use strict'
+
 export const CANVAS = d("canvas")
 export const CTX = CANVAS.getContext("2d")
 
 export const FPS = 60
-export const DEBUG = true
+export const DEBUG = false
 export const MS_PER_FRAME = (1000 / FPS)
 
 const useRaw = (document.URL.includes("passionyte.github.io/marsrescuemission"))
 
-export const version = `1.6.2${((!useRaw) && " [DEV]") || ""}` 
+export const version = `1.7${((!useRaw) && " [DEV]") || ""}` 
 
 if (!useRaw) document.title = `[DEV] ${document.title}`
 
@@ -103,9 +107,10 @@ export function newImg(src) {
     return i
 }
 
-export function newAudio(src, v) {
+export function newAudio(src, v, l) {
     const a = new Audio((Url + "snds/") + (((src) && src) || "pew.mp3"))
     a.volume = v || 0.1
+    a.loop = (l)
 
     return a
 }

@@ -1,3 +1,7 @@
+// Passionyte 2025
+
+'use strict'
+
 import { CTX, newImg, Object, CANVAS, DEBUG, newAudio, randInt } from "./globals.js"
 import { Projectile, Projectiles } from "./projectile.js"
 import { HERO } from "./main.js"

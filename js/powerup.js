@@ -1,3 +1,7 @@
+// Passionyte 2025
+
+'use strict'
+
 import { CTX, Object, newImg, DEBUG, CANVAS } from "./globals.js"
 
 export const Powerups = []

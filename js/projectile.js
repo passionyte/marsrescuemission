@@ -1,3 +1,7 @@
+// Passionyte 2025
+
+'use strict'
+
 import { newImg, CTX, Object, newAudio } from "./globals.js"
 
 export const Projectiles = []

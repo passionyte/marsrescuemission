@@ -1,3 +1,7 @@
+// Passionyte 2025
+
+'use strict'
+
 class Level {
     enemyCounts = {}
     enemiesSpawned = {}

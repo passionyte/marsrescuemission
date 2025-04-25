@@ -1,3 +1,7 @@
+// Passionyte 2025
+
+'use strict'
+
 class Setting {
     name
     type
@@ -15,12 +19,27 @@ class Setting {
 }
 
 export const Settings = [ // Default settings
-    new Setting("Alternate Cooldown", "QOL", false),
-    new Setting("Music", "Audio", true)
+    new Setting("Alternate Countdown", "QOL", false),
+    new Setting("Music", "Audio", true, function() {
+        globalThis.Music.playing = !(globalThis.Music.playing)
+    })
 ]
 
+export function getSettingClasses() {
+    let c = []
+
+    for (const s of Settings) {
+        if (!c[s.from]) {
+            c.push(s.from)
+        }
+    }
+
+    return c
+}
+
 export function changeSetting(plrData, nm, val, ...rest) {
-    for (const s of plrData.Settings) {
+    for (let s in plrData.Settings) {
+        s = plrData.Settings[s]
         if (s.name == nm) {
             s.value = val
 
@@ -30,7 +49,7 @@ export function changeSetting(plrData, nm, val, ...rest) {
         }
     }
 
-    localStorage.setItem("MRMData", plrData)
+    localStorage.setItem("MRMData", JSON.stringify(plrData))
 
     return plrData
 }
@@ -44,6 +63,18 @@ export function findSetting(f, nm) {
         if (s.name == nm) {
             result = s
             break
+        }
+    }
+
+    return result
+}
+
+export function getSettingsFromClass(c) {
+    const result = []
+
+    for (const s of Settings) {
+        if (s.from == c) {
+            result.push(s)
         }
     }
 
