@@ -605,7 +605,7 @@ function update() {
             }
 
             CTX.fillStyle = "white"
-            CTX.fillText(`Score: ${SCORE}`, cenX, cenY + 235, 200)
+            CTX.fillText(`Score: ${SCORE}`, cenX, cenY + 220, 200)
 
             CTX.font = "20px PressStart2P"
             CTX.fillText("Press Space to restart", cenX, endY - 50, 400)
