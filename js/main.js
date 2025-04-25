@@ -1,10 +1,11 @@
 'use strict'
 
-import { DEBUG, MS_PER_FRAME, CANVAS, CTX, keyClasses, randInt, clearCanvas, newImg, cloneArray, newAudio, version } from "./globals.js"
+import { DEBUG, MS_PER_FRAME, CANVAS, CTX, keyClasses, randInt, clearCanvas, newImg, cloneArray, newAudio, version, clearArray } from "./globals.js"
 import { Ship, Player, Enemies, enemyClasses, addStat } from "./player.js"
 import { Projectiles, checkCollision } from "./projectile.js"
 import { Levels } from "./levels.js"
 import { Powerup, powerupClasses, Powerups } from "./powerup.js"
+import { Settings, changeSetting, findSetting } from "./settings.js"
 
 // Variables
 
@@ -15,7 +16,20 @@ const maxes = {
     armor: 10
 }
 
-export const HERO = new Player((CANVAS.width / 2), (CANVAS.height - 100), 388, 299, maxes.hp, 0)
+export const HERO = new Player(
+    {
+        x: (CANVAS.width / 2), 
+        y: (CANVAS.height - 100), 
+        w: 388, 
+        h: 299, 
+        hp: maxes.hp, 
+        armor: 0,
+        src: "ship.png",
+        xs: 8,
+        ys: 0,
+        scale: 4
+    }
+)
 let lnum = 1
 let level = Levels[lnum]
 let SCORE = 0
@@ -25,6 +39,27 @@ let nextlvl
 let PAUSED = false
 let sudoPAUSED = false
 let FOCUSED = true
+
+// Player Data Handling 
+
+export const plrData = JSON.parse(localStorage.getItem("MRMData")) || {
+    Settings: Settings,
+    HighScore: 0
+}
+
+function saveData() {
+    localStorage.setItem("MRMData", JSON.stringify(plrData))
+}
+
+// Add missing settings
+let changed = false
+
+for (const s of Settings) {
+    if (!findSetting(plrData.Settings, s.name)) plrData.Settings.push(s); changed = true
+}
+
+if (changed) saveData()
+
 
 // Input
 
@@ -84,11 +119,11 @@ function countDown() {
 
     CTX.textAlign = "center"
 
-    CTX.font = "50px PressStart2P"
+    CTX.font = "40px PressStart2P"
     CTX.fillStyle = "white"
     CTX.fillText(`Clear! Incoming: Level ${lnum}`, (CANVAS.width / 2), (CANVAS.height / 2), 400)
 
-    CTX.font = "30px PressStart2P"
+    CTX.font = "25px PressStart2P"
     CTX.fillStyle = "yellow"
     CTX.fillText(`${(3 - cdsecs)}...`, (CANVAS.width / 2), (CANVAS.height / 2) + 50, 200)
 
@@ -103,6 +138,32 @@ function countDown() {
     } 
 
     cdsecs++
+}
+
+function restart(key) {
+    if (!keyClasses.shoot.includes(key.keyCode)) return
+
+    SCORE = 0
+    lnum = 1
+    level = Levels[lnum]
+
+    // Reset hero
+    HERO.position.x = (CANVAS.width / 2)
+    HERO.position.y = (CANVAS.height - 100)
+    HERO.velocity.x = 0
+    HERO.velocity.y = 0
+    HERO.hp = 10//maxes.hp
+    HERO.armor = 0
+
+    clearArray(Enemies)
+    clearArray(Projectiles)
+    clearArray(Powerups)
+
+    PAUSED = false
+
+    document.removeEventListener("keydown", restart)
+
+    update()
 }
 
 // Image initiations
@@ -123,7 +184,7 @@ let HeartScale = 4
 let HeartSize = 128
 let ArmorScale = 1.68
 let ArmorSize = 54
-let AutoScale = powerupClasses.auto.scale
+// let AutoScale = powerupClasses.auto.scale
 
 function newHeart(i, state = "heart", xo, yo, scale) {
     let size = HeartSize
@@ -287,7 +348,20 @@ function update() {
 
             if (!c) return // Non-existent enemy class
 
-            const e = new Ship(nm, randInt(100, (CANVAS.width - 100)), randInt(50, 250), c.w, c.h, c.hp, c.xs, c.ys, c.sdata, c.scale, c.src, c.score, c.bar, c.barcolor)
+            const e = new Ship(nm, {
+                x: randInt(100, (CANVAS.width - 100)),
+                y: randInt(50, 250), 
+                w: c.w, 
+                h: c.h,
+                hp: c.hp,
+                xs: c.xs,
+                ys: c.ys,
+                scale: c.scale,
+                src: c.src,
+                score: c.score,
+                bar: (c.bar),
+                barcolor: c.barcolor
+            }, c.sdata)
             Enemies.push(e)
 
             level.enemiesSpawned[nm]++
@@ -431,6 +505,13 @@ function update() {
         CTX.fillStyle = "white"
         CTX.fillText(`Score: ${SCORE}`, (CANVAS.width / 2), (CANVAS.height / 2) + 85, 200)
         CTX.fillText(`Level: ${lnum}`, (CANVAS.width / 2), (CANVAS.height / 2) + 175, 200)
+
+        CTX.font = "20px PressStart2P"
+        CTX.fillText("Press Space to restart", (CANVAS.width / 2), CANVAS.height - 50, 400)
+
+        document.addEventListener("keydown", restart)
+
+        if (SCORE > plrData.HighScore) plrData.HighScore = SCORE; saveData()
     }
 
     // do win condition
@@ -448,7 +529,7 @@ function update() {
         
         lnum++
         nextlvl = Levels[lnum]
-        Projectiles.splice(0, Projectiles.length)
+        clearArray(Projectiles)
 
         CTX.textAlign = "center"
         CTX.font = "40px PressStart2P"
@@ -478,6 +559,13 @@ function update() {
 
             CTX.fillStyle = "white"
             CTX.fillText(`Score: ${SCORE}`, (CANVAS.width / 2), (CANVAS.height / 2) + 235, 200)
+
+            CTX.font = "20px PressStart2P"
+            CTX.fillText("Press Space to restart", (CANVAS.width / 2), CANVAS.height - 50, 400)
+
+            document.addEventListener("keydown", restart)
+
+            if (SCORE > plrData.HighScore) plrData.HighScore = SCORE; saveData()
         }
     }
 
@@ -488,6 +576,7 @@ function update() {
         globalThis.Projectiles = Projectiles
         globalThis.Enemies = Enemies
         globalThis.Powerups = Powerups
+        globalThis.plrData = plrData
 
         CTX.textAlign = "left"
         CTX.fillStyle = "red"
@@ -530,5 +619,18 @@ if (!DEBUG) {
 else {
     startgame(false)
 }
+
+// prevent certain browser controls
+
+document.addEventListener("contextmenu", ev => {
+    ev.preventDefault()
+})
+
+// Thanks https://stackoverflow.com/questions/22559830/html-prevent-space-bar-from-scrolling-page
+window.addEventListener('keydown', function(e) {
+    if(e.keyCode == 32 && e.target == document.body) {
+      e.preventDefault();
+    }
+});
 
 export default { HERO }

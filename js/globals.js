@@ -2,12 +2,14 @@ export const CANVAS = d("canvas")
 export const CTX = CANVAS.getContext("2d")
 
 export const FPS = 60
-export const DEBUG = false
+export const DEBUG = true
 export const MS_PER_FRAME = (1000 / FPS)
 
 const useRaw = (document.URL.includes("passionyte.github.io/marsrescuemission"))
 
 export const version = `1.6.2${((!useRaw) && " [DEV]") || ""}` 
+
+if (!useRaw) document.title = `[DEV] ${document.title}`
 
 export const Url = ((!useRaw) && "../") || "https://raw.githubusercontent.com/passionyte/marsrescuemission/refs/heads/main/"
 
@@ -120,6 +122,10 @@ export function cloneArray(a) {
     }
 
     return c
+}
+
+export function clearArray(a) {
+    a.splice(0, a.length)
 }
 
 export default { CANVAS, CTX } 

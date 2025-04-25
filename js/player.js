@@ -269,29 +269,29 @@ export class Ship extends Object {
         CTX.drawImage(this.img, 0, 0, this.size.w, this.size.h, this.left, this.top, this.width, this.height)
     }
 
-    constructor(type, x, y, w, h, hp, xs, ys, sdata, scale, src, score, bar, barcolor) {
-        super(x, y, w, h, scale)
+    constructor(type, d, sd) {
+        super(d.x, d.y, d.w, d.h, d.scale)
 
         this.type = type
-        this.hp = hp
-        this.maxhp = hp
+        this.hp = d.hp
+        this.maxhp = this.hp
 
-        this.xspeed = xs
-        this.yspeed = ys
-        this.sdata = sdata
-        this.score = score
+        this.xspeed = d.xs
+        this.yspeed = d.ys
+        this.sdata = sd
+        this.score = d.score
 
-        this.bar = (bar)
-        this.barcolor = barcolor
+        this.bar = (d.bar)
+        this.barcolor = d.barcolor
 
-        this.scale = scale
-        this.img = newImg(src || `en_${type}.png`)
+        this.scale = d.scale
+        this.img = newImg(d.src || `en_${type}.png`)
     }
 }
 
 export class Player extends Ship {
-    constructor(x, y, w, h, hp, ar) {
-        const sdata = {
+    constructor(d) {
+        const sd = { // Shot data
             speed: 12,
             cooldown: 0.1,
             life: 1,
@@ -300,10 +300,10 @@ export class Player extends Ship {
             damage: 1,
         }
 
-        super("Player", x, y, w, h, hp, 7, 0, sdata, 4, "ship.png")
+        super("Player", d, sd)
 
         this.auto = false // Auto firing for a powerup
-        this.armor = ar // NPC ships can not have armor
+        this.armor = d.armor // NPC ships can not have armor
     }
 }
 

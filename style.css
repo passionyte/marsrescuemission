@@ -19,16 +19,25 @@ canvas {
     src: url("./PressStart2P-Regular.ttf")
 }
 
-a {
+a, li, fieldset {
     font-family: PressStart2P
 }
 
+li, fieldset, .title {
+    margin-bottom: 2vw
+}
+
 .title {
-    font-size: 1vw;
+    font-size: 1.5vw;
+    font-weight: bold
 }
 
 .subtitle {
-    font-size: 0.5vw;
+    font-size: 0.75vw;
+}
+
+label {
+    font-size: 0.75vw;
 }
 
 .centertext {
