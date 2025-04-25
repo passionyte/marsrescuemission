@@ -567,7 +567,6 @@ function update() {
         CTX.fillText(plrData.HighScore, cenX, cenY + 280, 200)
     }
     else if (Enemies.length == 0 && (SCORE > 0)) { // do win condition
-        console.log("Player won")
         PAUSED = true
         clearCanvas()
 
@@ -590,8 +589,6 @@ function update() {
             CTX.fillText(`Clear! Incoming: Level ${lnum}`, cenX, cenY, 400)
 
             const alt = findSetting(plrData.Settings, "Alternate Countdown").value
-
-            console.log(alt)
 
             if (!alt) {
                 cd = setInterval(countDown, ((!DEBUG) && 1000) || 1)
