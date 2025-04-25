@@ -181,6 +181,8 @@ function restart(key) {
     HERO.velocity.y = 0
     HERO.hp = 10//maxes.hp
     HERO.armor = 0
+    HERO.xs = 8
+    HERO.auto = false
 
     clearArray(Enemies)
     clearArray(Projectiles)
