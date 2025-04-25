@@ -127,7 +127,8 @@ function continueGame(key) {
         document.removeEventListener("keydown", continueGame)
     }
 
-    clearInterval(cd)
+    if (cd) clearInterval(cd); cd = null
+
     cdsecs = 0
     level = nextlvl
 
@@ -136,7 +137,7 @@ function continueGame(key) {
     PAUSED = false
 }
 
-function countDown() {
+function countDown(alt) {
     clearCanvas()
 
     CTX.textAlign = "center"
@@ -147,7 +148,7 @@ function countDown() {
 
     CTX.font = "25px PressStart2P"
     CTX.fillStyle = "yellow"
-    if (!findSetting(plrData.Settings, "Alternate Countdown").value) {
+    if (!alt) {
         CTX.fillText(`${(3 - cdsecs)}...`, cenX, cenY + 50, 200)
     
         if (cdsecs == 3) continueGame()
@@ -161,13 +162,13 @@ function countDown() {
     }
 }
 
-function restart(key) {
+function restartGame(key) {
     if (!keyClasses.shoot.includes(key.keyCode)) return
 
     SCORE = 0
     lnum = 1
     level = Levels[lnum]
-    nextlvl = level
+    // nextlvl = level
 
     level.enemiesSpawned = {}
     for (const nm in level.enemyCounts) {
@@ -190,7 +191,7 @@ function restart(key) {
 
     PAUSED = false
 
-    document.removeEventListener("keydown", restart)
+    document.removeEventListener("keydown", restartGame)
 
     update()
 }
@@ -549,7 +550,7 @@ function update() {
         CTX.font = "20px PressStart2P"
         CTX.fillText("Press Space to restart", cenX, endY - 50, 400)
 
-        document.addEventListener("keydown", restart)
+        document.addEventListener("keydown", restartGame)
 
         if (SCORE > plrData.HighScore) {
             plrData.HighScore = SCORE
@@ -566,6 +567,7 @@ function update() {
         CTX.fillText(plrData.HighScore, cenX, cenY + 280, 200)
     }
     else if (Enemies.length == 0 && (SCORE > 0)) { // do win condition
+        console.log("Player won")
         PAUSED = true
         clearCanvas()
 
@@ -587,7 +589,17 @@ function update() {
             CTX.fillStyle = "white"
             CTX.fillText(`Clear! Incoming: Level ${lnum}`, cenX, cenY, 400)
 
-            cd = setInterval(countDown, ((!DEBUG) && 1000) || 1)
+            const alt = findSetting(plrData.Settings, "Alternate Countdown").value
+
+            console.log(alt)
+
+            if (!alt) {
+                cd = setInterval(countDown, ((!DEBUG) && 1000) || 1)
+            }
+            else {
+                countDown(true)
+            }
+            
         }
         else {
             CTX.font = "45px PressStart2P"
@@ -612,7 +624,7 @@ function update() {
             CTX.font = "20px PressStart2P"
             CTX.fillText("Press Space to restart", cenX, endY - 50, 400)
 
-            document.addEventListener("keydown", restart)
+            document.addEventListener("keydown", restartGame)
 
             if (SCORE > plrData.HighScore) {
                 plrData.HighScore = SCORE
@@ -712,6 +724,7 @@ for (const c of getSettingClasses()) {
 
             i.addEventListener("change", function() {
                 plrData = changeSetting(plrData, s.name, i.checked)
+                saveData()
             })
         }
         else {

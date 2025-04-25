@@ -55,8 +55,6 @@ export function changeSetting(plrData, nm, val, ...rest) {
         }
     }
 
-    localStorage.setItem("MRMData", JSON.stringify(plrData))
-
     return plrData
 }
 
