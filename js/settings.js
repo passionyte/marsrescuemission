@@ -20,8 +20,13 @@ class Setting {
 
 export const Settings = [ // Default settings
     new Setting("Alternate Countdown", "QOL", false),
-    new Setting("Music", "Audio", true, function() {
-        globalThis.Music.volume = ((globalThis.Music.volume == 0) && 0.025) || 0
+    new Setting("Music", "Audio", true, function(val) {
+        if (val) {
+            globalThis.Music.play()
+        }
+        else {
+            globalThis.Music.pause()
+        }
     })
 ]
 
@@ -43,7 +48,8 @@ export function changeSetting(plrData, nm, val, ...rest) {
         if (s.name == nm) {
             s.value = val
 
-            if (s.apply) s.apply(rest)
+            const rs = findSetting(Settings, nm)
+            if (rs.apply) rs.apply(val, rest)
             
             break
         }
