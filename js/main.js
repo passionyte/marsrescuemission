@@ -549,7 +549,19 @@ function update() {
 
         document.addEventListener("keydown", restart)
 
-        if (SCORE > plrData.HighScore) plrData.HighScore = SCORE; saveData()
+        if (SCORE > plrData.HighScore) {
+            plrData.HighScore = SCORE
+            saveData()
+
+            CTX.fillStyle = "yellow"
+            CTX.font = "15px PressStart2P"
+            CTX.fillText("New High Score!", cenX, cenY + 250, 400)
+        }
+
+        CTX.fillStyle = "white"
+        CTX.font = "10px PressStart2P"
+
+        CTX.fillText(plrData.HighScore, cenX, cenY + 280, 200)
     }
     else if (Enemies.length == 0 && (SCORE > 0)) { // do win condition
         PAUSED = true
@@ -600,7 +612,19 @@ function update() {
 
             document.addEventListener("keydown", restart)
 
-            if (SCORE > plrData.HighScore) plrData.HighScore = SCORE; saveData()
+            if (SCORE > plrData.HighScore) {
+                plrData.HighScore = SCORE
+                saveData()
+
+                CTX.fillStyle = "yellow"
+                CTX.font = "20px PressStart2P"
+                CTX.fillText("New High Score!", cenX, cenY + 250, 400)
+            }
+
+            CTX.fillStyle = "white"
+            CTX.font = "15px PressStart2P"
+
+            CTX.fillText(`HI: ${plrData.HighScore}`, cenX, cenY + 280, 200)
         }
     }
     
