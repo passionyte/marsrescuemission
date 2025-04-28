@@ -559,7 +559,7 @@ function update() {
 
             CTX.fillStyle = "yellow"
             CTX.font = "15px PressStart2P"
-            CTX.fillText("New High Score!", cenX, cenY + 250, 400)
+            CTX.fillText("New High Score!", cenX, cenY + 235, 400)
         }
 
         CTX.fillStyle = "white"
