@@ -2,10 +2,9 @@
 'use strict'
 
 import { Url } from "./globals.js"
+import { findSetting } from "./settings.js"
 
-export const Playing = []
-
-export const Sounds = {}
+export const Playing = {}
 
 export function newSound(src, v, l) {
     const a = new Audio((Url + "snds/") + (((src) && src) || "pew.mp3"))
@@ -16,24 +15,27 @@ export function newSound(src, v, l) {
 }
 
 export function playSound(a, n) {
-    if (!globalThis.Settings.Sounds) console.log("Death"); return
+    if (!findSetting(globalThis.Settings, "Sounds").value) return
 
-    if (n) {
-        const nw = newSound(a.src, a.volume || 0.01, a.loop || false)
+    if (n) { // new/non-lingering audio
+        let nw = newSound(a.src, a.volume || 0.01, a.loop || false)
         nw.play()
 
-        let i = nw.length
-        Playing.push(nw)
+        Playing[nw] = true
 
         if (nw.loop) return
         setTimeout(function() {
+            Playing[nw] = null
             nw = null
-            Playing.splice(i, 1)
         }, (nw.duration * 1000))
     }
-    else {
+    else { // lingering audio
+        if (Playing[a]) return
         a.play()
-        Playing.push(a)
+
+        setTimeout(function() {
+            Playing[a] = false
+        }, (a.duration * 1000))
     }
 }
 

@@ -10,21 +10,23 @@ class Setting {
     from
     value
     apply
+    desc
 
-    constructor(name, from, def, func) {
+    constructor(name, from, def, desc = "", func) {
         this.name = name
         this.from = from
         this.type = typeof(def)
         this.value = def
         this.apply = func
+        this.desc = desc
     }
 }
 
 export const Settings = [ // Default settings
     // QOL
-    new Setting("Alternate Countdown", "QOL", false),
+    new Setting("Alternate Countdown", "QOL", false, "Toggles press space to continue instead of a countdown"),
     // Audio
-    new Setting("Music", "Audio", true, function(val) {
+    new Setting("Music", "Audio", true, "Toggles music", function(val) {
         if (val) {
             globalThis.Music.play()
         }
@@ -32,17 +34,17 @@ export const Settings = [ // Default settings
             globalThis.Music.pause()
         }
     }),
-    new Setting("Sounds", "Audio", true, function(val) {
+    new Setting("Sounds", "Audio", true, "Toggles sound effects", function(val) {
         if (val) {
-            for (const a of Playing) {
-                if (!a.paused) {
+            for (const a in Playing) {
+                if (!a.paused && a.pause) {
                     a.pause()
                 }
             }
         }
         else {
-            for (const a of Playing) {
-                if (a.paused) {
+            for (const a in Playing) {
+                if (a.paused && a.play) {
                     a.play()
                 }
             }

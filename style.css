@@ -33,11 +33,11 @@ li, fieldset, .title {
 }
 
 .subtitle {
-    font-size: 0.75vw;
+    font-size: 0.8vw;
 }
 
 label {
-    font-size: 0.75vw;
+    font-size: 0.8vw;
 }
 
 .centertext {
@@ -62,4 +62,9 @@ footer {
     border-color: rgb(31, 31, 31);
     border-style: solid;
     border-width: thick;
+ }
+
+ .setting {
+    margin: 2vw;
+    font-size: 0.6vw
  }

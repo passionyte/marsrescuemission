@@ -69,7 +69,6 @@ for (const s of Settings) {
 
 if (changed) saveData()
 
-
 // Input
 
 const downKeys = {}
@@ -564,9 +563,9 @@ function update() {
         }
 
         CTX.fillStyle = "white"
-        CTX.font = "10px PressStart2P"
+        CTX.font = "15px PressStart2P"
 
-        CTX.fillText(plrData.HighScore, cenX, cenY + 280, 200)
+        CTX.fillText(`HI: ${plrData.HighScore}`, cenX, cenY + 265, 200)
     }
     else if (Enemies.length == 0 && (SCORE > 0)) { // do win condition
         PAUSED = true
@@ -598,7 +597,6 @@ function update() {
             else {
                 countDown(true)
             }
-            
         }
         else {
             CTX.font = "45px PressStart2P"
@@ -717,6 +715,8 @@ for (const c of getSettingClasses()) {
             i.type = ((s.type == "boolean") && "checkbox") || ""
 
             const e = findSetting(plrData.Settings, s.name) || findSetting(Settings, s.name)
+
+            se.querySelector("#sdesc").innerHTML = s.desc
 
             // disregard warnings, e should always exist   
             if (i.type == "checkbox") { 
