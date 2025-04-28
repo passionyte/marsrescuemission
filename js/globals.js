@@ -6,7 +6,7 @@ export const CANVAS = d("canvas")
 export const CTX = CANVAS.getContext("2d")
 
 export const FPS = 60
-export const DEBUG = true
+export const DEBUG = false
 export const MS_PER_FRAME = (1000 / FPS)
 
 const useRaw = (document.URL.includes("passionyte.github.io/marsrescuemission"))
