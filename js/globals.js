@@ -107,14 +107,6 @@ export function newImg(src) {
     return i
 }
 
-export function newAudio(src, v, l) {
-    const a = new Audio((Url + "snds/") + (((src) && src) || "pew.mp3"))
-    a.volume = v || 0.1
-    a.loop = (l)
-
-    return a
-}
-
 export function clearCanvas() {
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height)
 }

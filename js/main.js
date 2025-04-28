@@ -2,12 +2,13 @@
 
 'use strict'
 
-import { DEBUG, MS_PER_FRAME, CANVAS, CTX, keyClasses, randInt, clearCanvas, newImg, cloneArray, newAudio, version, clearArray } from "./globals.js"
+import { DEBUG, MS_PER_FRAME, CANVAS, CTX, keyClasses, randInt, clearCanvas, newImg, cloneArray, version, clearArray, d } from "./globals.js"
 import { Ship, Player, Enemies, enemyClasses, addStat } from "./player.js"
 import { Projectiles, checkCollision } from "./projectile.js"
 import { Levels } from "./levels.js"
 import { Powerup, powerupClasses, Powerups } from "./powerup.js"
-import { Settings, changeSetting, findSetting, getSettingClasses, getSettingsFromClass } from "./settings.js"
+import { Settings, changeSetting, findSetting, getSettingClasses, getSettingsFromClass, computeDefault } from "./settings.js"
+import { newSound, playSound } from "./sounds.js"
 
 // Variables
 
@@ -50,9 +51,10 @@ let FOCUSED = true
 // Player Data Handling 
 
 export let plrData = JSON.parse(localStorage.getItem("MRMData")) || {
-    Settings: Settings,
+    Settings: computeDefault(),
     HighScore: 0
 }
+globalThis.Settings = plrData.Settings
 
 function saveData() {
     localStorage.setItem("MRMData", JSON.stringify(plrData))
@@ -197,13 +199,13 @@ function restartGame(key) {
 }
 
 // Sound initiations
-const Music = newAudio("groovy.mp3", 0.025, true)
-newAudio("block.mp3")
-newAudio("boom.wav")
-newAudio("break.mp3")
-newAudio("pew.mp3")
-newAudio("pop.wav")
-newAudio("powerup.mp3")
+const Music = newSound("groovy.mp3", 0.025, true)
+newSound("block.mp3")
+newSound("boom.wav")
+newSound("break.mp3")
+newSound("pew.mp3")
+newSound("pop.wav")
+newSound("powerup.mp3")
 
 globalThis.Music = Music
 
@@ -346,7 +348,7 @@ function update() {
                     const t = u.type
 
                     if (HERO[t] != null) { // Stat based power-up
-                        newAudio("powerup.mp3", 0.03).play()
+                        playSound({src: "powerup.mp3", volume: 0.03}, true)
 
                         if (u.dur) { // Has a duration
                             const old = HERO[t]
@@ -416,7 +418,7 @@ function update() {
 
     for (const e of fakeEnemies) {
         if (e.hp <= 0) { // Death
-            e.boom.play()
+            playSound(e.boom)
             Enemies.splice(ei, 1)   
 
             SCORE += ((e.score) && e.score) || 1
@@ -463,14 +465,14 @@ function update() {
                 // check player collision
                 if (checkCollision(HERO, p)) {
                     if (HERO.armor <= 0) {
-                        newAudio("pop.wav", 0.05).play()
+                        playSound({src: "pop.wav", volume: 0.05}, true)
                         addStat(HERO, "hp", -p.damage)
                     }
                     else {
-                        newAudio("block.mp3", 0.1).play()
+                        playSound({src: "block.mp3", volume: 0.1}, true)
                         addStat(HERO, "armor", -p.damage)
 
-                        if (HERO.armor <= 0) newAudio("break.mp3", 0.1).play()
+                        if (HERO.armor <= 0) playSound({src: "break.mp3", volume: 0.1}, true)
                     }
                     
                     Projectiles.splice(pi, 1)
@@ -696,45 +698,48 @@ else {
 // site stuff
 
 for (const c of getSettingClasses()) {
-    const fs = document.getElementById("fsdummy").cloneNode(true)
+    if (!d("settings").querySelector(`#${c}`)) {
+        const fs = d("fsdummy").cloneNode(true)
 
-    fs.id = c
-    fs.querySelector("#from").innerText = c
-    
-    for (const s of getSettingsFromClass(c)) {
-        const se = fs.querySelector("#sdummy").cloneNode(true)
-        se.id = s.name
+        fs.id = c
+        fs.querySelector("#from").innerText = c
+        
+        for (const s of getSettingsFromClass(c)) {
+            const se = fs.querySelector("#sdummy").cloneNode(true)
+            se.id = s.name
 
-        const l = se.querySelector("#ldummy")
-        l.id = "label"
-        l.innerHTML = `${s.name}:`
+            const l = se.querySelector("#ldummy")
+            l.id = "label"
+            l.innerHTML = `${s.name}:`
 
-        const i = se.querySelector("#idummy")
-        i.id = "input"
-        i.type = ((s.type == "boolean") && "checkbox") || ""
+            const i = se.querySelector("#idummy")
+            i.id = "input"
+            i.type = ((s.type == "boolean") && "checkbox") || ""
 
-        const e = findSetting(plrData.Settings, s.name) || findSetting(Settings, s.name)
+            const e = findSetting(plrData.Settings, s.name) || findSetting(Settings, s.name)
 
-        // disregard warnings, e should always exist   
-        if (i.type == "checkbox") { 
-            i.checked = (e.value)
+            // disregard warnings, e should always exist   
+            if (i.type == "checkbox") { 
+                i.checked = (e.value)
 
-            i.addEventListener("change", function() {
-                plrData = changeSetting(plrData, s.name, i.checked)
-                saveData()
-            })
+                i.addEventListener("change", function() {
+                    plrData = changeSetting(plrData, s.name, i.checked)
+                    globalThis.Settings = plrData.Settings
+                    saveData()
+                })
+            }
+            else {
+                i.value = e.value
+            }
+
+            fs.appendChild(se)
         }
-        else {
-            i.value = e.value
-        }
 
-        fs.appendChild(se)
+        fs.removeChild(fs.querySelector("#sdummy")) // this had me confused for a while lol
+
+        fs.hidden = false
+        d("settings").appendChild(fs)
     }
-
-    fs.removeChild(fs.querySelector("#sdummy")) // this had me confused for a while lol
-
-    fs.hidden = false
-    document.getElementById("settings").appendChild(fs)
 }
 
 // prevent certain browser controls
@@ -743,16 +748,9 @@ document.addEventListener("contextmenu", ev => {
     ev.preventDefault()
 })
 
-// Thanks https://stackoverflow.com/questions/22559830/html-prevent-space-bar-from-scrolling-page
-window.addEventListener('keydown', function(e) {
-    if(e.keyCode == 32 && e.target == document.body) {
-      e.preventDefault();
-    }
-});
-
 window.addEventListener("keydown", function(e) {
     // Check if the pressed key is the left or right arrow key
-    if ([37, 39].indexOf(e.keyCode) > -1) {
+    if ([37, 39].indexOf(e.keyCode) > -1 || (e.keyCode == 32 && e.target == document.body || e.target.type == "checkbox")) {
       e.preventDefault(); // Prevent the default scrolling behavior
     }
   }, false);

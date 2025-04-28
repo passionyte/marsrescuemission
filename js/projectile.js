@@ -2,7 +2,8 @@
 
 'use strict'
 
-import { newImg, CTX, Object, newAudio } from "./globals.js"
+import { newImg, CTX, Object } from "./globals.js"
+import { newSound } from "./sounds.js"
 
 export const Projectiles = []
 
@@ -39,7 +40,7 @@ export class Projectile extends Object {
         this.damage = d
         this.time = performance.now()
 
-        if (s) this.sound = newAudio(null, 0.01)
+        if (s) this.sound = newSound(null, 0.01)
     }
 }
 

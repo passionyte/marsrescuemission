@@ -2,9 +2,10 @@
 
 'use strict'
 
-import { CTX, newImg, Object, CANVAS, DEBUG, newAudio, randInt } from "./globals.js"
+import { CTX, newImg, Object, CANVAS, DEBUG, randInt } from "./globals.js"
 import { Projectile, Projectiles } from "./projectile.js"
 import { HERO } from "./main.js"
+import { newSound, playSound } from "./sounds.js"
 
 export const Enemies = []
 export const enemyClasses = {
@@ -213,7 +214,7 @@ export class Ship extends Object {
     yspeed
     sdata
     last_shot = 0
-    boom = newAudio("boom.wav", 0.01)
+    boom = newSound("boom.wav", 0.01)
 
     shoot() {
         const NOW = performance.now()
@@ -232,7 +233,7 @@ export class Ship extends Object {
             const c = ((typeof(s.color) == "string") && s.color) || s.color[(randInt(1, s.color.length) - 1)]
             const p = new Projectile((this.position.x + spread), (this.position.y + yo), 6, 12, s.life, c, s.damage, (i == 0))
 
-            if (i == 0) p.sound.play()
+            if (i == 0) playSound(p.sound)
             p.velocity.y = ((s.inverted) && -s.speed) || s.speed
             p.player = fromPlr
             Projectiles.push(p)

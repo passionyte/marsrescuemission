@@ -2,6 +2,8 @@
 
 'use strict'
 
+import { Playing } from "./sounds.js"
+
 class Setting {
     name
     type
@@ -19,13 +21,31 @@ class Setting {
 }
 
 export const Settings = [ // Default settings
+    // QOL
     new Setting("Alternate Countdown", "QOL", false),
+    // Audio
     new Setting("Music", "Audio", true, function(val) {
         if (val) {
             globalThis.Music.play()
         }
         else {
             globalThis.Music.pause()
+        }
+    }),
+    new Setting("Sounds", "Audio", true, function(val) {
+        if (val) {
+            for (const a of Playing) {
+                if (!a.paused) {
+                    a.pause()
+                }
+            }
+        }
+        else {
+            for (const a of Playing) {
+                if (a.paused) {
+                    a.play()
+                }
+            }
         }
     })
 ]
@@ -80,6 +100,19 @@ export function getSettingsFromClass(c) {
         if (s.from == c) {
             result.push(s)
         }
+    }
+
+    return result
+}
+
+export function computeDefault() {
+    let result = []
+
+    for (const s of Settings) {
+        result.push({
+            name: s.name,
+            value: s.value
+        })
     }
 
     return result
