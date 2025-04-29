@@ -2,6 +2,7 @@
 
 'use strict'
 
+import { restartGame } from "./main.js"
 import { Playing } from "./sounds.js"
 
 class Setting {
@@ -25,6 +26,10 @@ class Setting {
 export const Settings = [ // Default settings
     // QOL
     new Setting("Alternate Countdown", "QOL", false, "Toggles press space to continue instead of a countdown"),
+    // Difficulty
+    new Setting("Hardcore", "Difficulty", false, "Start with only half a heart, but get double the score (This will restart your game)", function(val) {
+        restartGame()
+    }),
     // Audio
     new Setting("Music", "Audio", true, "Toggles music", function(val) {
         if (val) {

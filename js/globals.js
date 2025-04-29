@@ -11,7 +11,7 @@ export const MS_PER_FRAME = (1000 / FPS)
 
 const useRaw = (document.URL.includes("passionyte.github.io/marsrescuemission"))
 
-export const version = `1.8.1${((!useRaw) && " [DEV]") || ""}` 
+export const version = `1.8.5${((!useRaw) && " [DEV]") || ""}` 
 
 if (!useRaw) document.title = `[DEV] ${document.title}`
 
