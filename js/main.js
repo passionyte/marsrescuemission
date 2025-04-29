@@ -237,11 +237,18 @@ let ArmorSize = 54
 
 function newHeart(i, state = ((hardcore) && "hardheart") || "heart", xo, yo, scale) {
     let size = HeartSize
-    if (state.includes("armor")) size = ArmorSize
+    let isArmor = (state.includes("armor"))
+    if (isArmor) size = ArmorSize
 
     const s = (size / scale)
 
-    CTX.drawImage(Imgs[state], 0, 0, size, size, ((i * s) + xo), (((endY) - s) + yo), s, s)
+    // cool shake thing
+    let shake = 0
+    if ((isArmor) && (HERO.armor <= 2) || ((!isArmor) && HERO.hp <= 2)) {
+        shake = randInt(-4, 4)
+    }
+
+    CTX.drawImage(Imgs[state], 0, 0, size, size, ((i * s) + xo), (((endY) - s) + (yo + shake)), s, s)
 }
 
 function drawHP(xo = 0, yo = 0) {
