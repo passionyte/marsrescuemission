@@ -46,6 +46,7 @@ let cd
 let PAUSED = false
 let sudoPAUSED = false
 let FOCUSED = true
+let hardcore = false
 
 // Player Data Handling 
 
@@ -165,8 +166,10 @@ function countDown(alt) {
     }
 }
 
-function restartGame(key) {
-    if (!keyClasses.shoot.includes(key.keyCode)) return
+export function restartGame(key) {
+    if (key && !keyClasses.shoot.includes(key.keyCode)) return
+
+    if (!PAUSED) PAUSED = true
 
     level.resetSpawned()
 
@@ -176,12 +179,14 @@ function restartGame(key) {
 
     level.resetSpawned()
 
+    hardcore = (findSetting(plrData.Settings, "Hardcore").value)
+
     // Reset hero
     HERO.position.x = cenX
     HERO.position.y = (endY - 100)
     HERO.velocity.x = 0
     HERO.velocity.y = 0
-    HERO.hp = 10//maxes.hp
+    HERO.hp = ((hardcore) && 1) || 10
     HERO.armor = 0
     HERO.xs = 8
     HERO.auto = false
@@ -192,7 +197,7 @@ function restartGame(key) {
 
     PAUSED = false
 
-    document.removeEventListener("keydown", restartGame)
+    if (key) document.removeEventListener("keydown", restartGame)
 
     update()
 }
@@ -219,7 +224,9 @@ const Imgs = {
     armor_empty: newImg("armor_empty.png"),
     auto: newImg("auto.png"),
     bg: newImg("bg.png"),
-    speed: newImg("speed.png")
+    speed: newImg("speed.png"),
+    hardheart: newImg("hardheart.png"),
+    hardheart_half: newImg("hardheart_half.png"),
 }
 
 let HeartScale = 4
@@ -228,7 +235,7 @@ let ArmorScale = 1.68
 let ArmorSize = 54
 // let AutoScale = powerupClasses.auto.scale
 
-function newHeart(i, state = "heart", xo, yo, scale) {
+function newHeart(i, state = ((hardcore) && "hardheart") || "heart", xo, yo, scale) {
     let size = HeartSize
     if (state.includes("armor")) size = ArmorSize
 
@@ -248,12 +255,12 @@ function drawHP(xo = 0, yo = 0) {
     let heartCount = 0
 
     for (let i = 0; (i < fullHearts); i++) {
-        newHeart(heartCount, "heart", xo, yo, HeartScale)
+        newHeart(heartCount, ((hardcore) && "hardheart") || "heart", xo, yo, HeartScale)
         heartCount++
     }
 
     if (halfHeart) { // Only one half heart can exist
-        newHeart(heartCount, "heart_half", xo, yo, HeartScale)
+        newHeart(heartCount, ((hardcore) && "hardheart_half") || "heart_half", xo, yo, HeartScale)
         heartCount++
     }
 
@@ -365,7 +372,7 @@ function update() {
                             HERO[t] = n
                         }
                         
-                        if (u.score) SCORE += u.score
+                        if (u.score) SCORE += (u.score * (((hardcore) && 2) || 1))
                     }
                     else { // Isn't a power-up based on a stat
 
@@ -420,7 +427,7 @@ function update() {
             playSound(e.boom)
             Enemies.splice(ei, 1)   
 
-            SCORE += ((e.score) && e.score) || 1
+            SCORE += (((e.score) && e.score) || 1 * (((hardcore) && 2) || 1))
         }
         else { // Very simple AI
             if (!e.varspeed) e.varspeed = -e.xspeed
@@ -662,7 +669,11 @@ function startGame(ev) {
     if (!ev || (keyClasses.shoot.includes(ev.keyCode))) {
         document.removeEventListener("keydown", startGame)
 
+        // Some settings to load
         if (findSetting(plrData.Settings, "Music").value) Music.play()
+
+        hardcore = (findSetting(plrData.Settings, "Hardcore").value)
+        if (hardcore) HERO.hp = 1
 
         update()
         input()
