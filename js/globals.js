@@ -11,7 +11,7 @@ export const MS_PER_FRAME = (1000 / FPS)
 
 const useRaw = (document.URL.includes("passionyte.github.io/marsrescuemission"))
 
-export const version = `1.8${((!useRaw) && " [DEV]") || ""}` 
+export const version = `1.8.1${((!useRaw) && " [DEV]") || ""}` 
 
 if (!useRaw) document.title = `[DEV] ${document.title}`
 
@@ -123,6 +123,16 @@ export function cloneArray(a) {
 
 export function clearArray(a) {
     a.splice(0, a.length)
+}
+
+export function adtLen(a, i) {
+    let len = 0
+
+    for (const x in a) {
+        len += ((i) && a[x]) || 1
+    }
+
+    return len
 }
 
 export default { CANVAS, CTX } 
