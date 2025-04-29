@@ -567,7 +567,7 @@ function update() {
         CTX.fillStyle = "white"
         CTX.font = "10px PressStart2P"
 
-        CTX.fillText(plrData.HighScore, cenX, cenY + 280, 200)
+        CTX.fillText(`HI: ${plrData.HighScore}`, cenX, cenY + 280, 200)
     }
     else if (Enemies.length == 0 && (SCORE > 0)) { // do win condition
         PAUSED = true
