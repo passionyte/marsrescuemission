@@ -147,7 +147,7 @@ function countDown(alt) {
 
     CTX.font = "40px PressStart2P"
     CTX.fillStyle = "white"
-    CTX.fillText(`Clear! Incoming: Level ${lnum}`, cenX, cenY, 400)
+    CTX.fillText(`Clear! Incoming: Level ${(lnum + 1)}`, cenX, cenY, 400)
 
     CTX.font = "25px PressStart2P"
     CTX.fillStyle = "yellow"
