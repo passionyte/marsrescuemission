@@ -719,6 +719,8 @@ for (const c of getSettingClasses()) {
 
             const e = findSetting(plrData.Settings, s.name) || findSetting(Settings, s.name)
 
+            se.querySelector("#sdesc").innerHTML = s.desc
+
             // disregard warnings, e should always exist   
             if (i.type == "checkbox") { 
                 i.checked = (e.value)
