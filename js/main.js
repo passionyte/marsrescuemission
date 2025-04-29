@@ -2,7 +2,7 @@
 
 'use strict'
 
-import { DEBUG, MS_PER_FRAME, CANVAS, CTX, keyClasses, randInt, clearCanvas, newImg, cloneArray, version, clearArray, d } from "./globals.js"
+import { DEBUG, MS_PER_FRAME, CANVAS, CTX, keyClasses, randInt, clearCanvas, newImg, cloneArray, version, clearArray, d, adtLen } from "./globals.js"
 import { Ship, Player, Enemies, enemyClasses, addStat } from "./player.js"
 import { Projectiles, checkCollision } from "./projectile.js"
 import { Levels } from "./levels.js"
@@ -43,7 +43,6 @@ let level = Levels[lnum]
 let SCORE = 0
 let cdsecs = 0
 let cd
-let nextlvl
 let PAUSED = false
 let sudoPAUSED = false
 let FOCUSED = true
@@ -68,6 +67,7 @@ for (const s of Settings) {
 }
 
 if (changed) saveData()
+
 
 // Input
 
@@ -128,10 +128,12 @@ function continueGame(key) {
         document.removeEventListener("keydown", continueGame)
     }
 
-    if (cd) clearInterval(cd); cd = null
+    if (cd) clearInterval(cd); cd = null; cdsecs = 0
 
-    cdsecs = 0
-    level = nextlvl
+    level.resetSpawned()
+
+    lnum++
+    level = Levels[(lnum)]
 
     HERO.velocity.x = 0
     HERO.position.x = cenX
@@ -166,15 +168,13 @@ function countDown(alt) {
 function restartGame(key) {
     if (!keyClasses.shoot.includes(key.keyCode)) return
 
+    level.resetSpawned()
+
     SCORE = 0
     lnum = 1
     level = Levels[lnum]
-    // nextlvl = level
 
-    level.enemiesSpawned = {}
-    for (const nm in level.enemyCounts) {
-        level.enemiesSpawned[nm] = 0
-    }
+    level.resetSpawned()
 
     // Reset hero
     HERO.position.x = cenX
@@ -531,6 +531,8 @@ function update() {
     CTX.fillStyle = "white"
     CTX.fillText(SCORE, endX, (endY - 5), 200)
 
+    if (PAUSED || !FOCUSED) return
+
     // do lose condition
 
     if (HERO.hp <= 0) {
@@ -559,13 +561,13 @@ function update() {
 
             CTX.fillStyle = "yellow"
             CTX.font = "15px PressStart2P"
-            CTX.fillText("New High Score!", cenX, cenY + 235, 400)
+            CTX.fillText("New High Score!", cenX, cenY + 250, 400)
         }
 
         CTX.fillStyle = "white"
-        CTX.font = "15px PressStart2P"
+        CTX.font = "10px PressStart2P"
 
-        CTX.fillText(`HI: ${plrData.HighScore}`, cenX, cenY + 265, 200)
+        CTX.fillText(plrData.HighScore, cenX, cenY + 280, 200)
     }
     else if (Enemies.length == 0 && (SCORE > 0)) { // do win condition
         PAUSED = true
@@ -577,17 +579,17 @@ function update() {
                 addStat(HERO, stat, r[stat])
             }
         }
-        
-        lnum++
-        nextlvl = Levels[lnum]
+
         clearArray(Projectiles)
 
         CTX.textAlign = "center"
         CTX.font = "40px PressStart2P"
 
-        if (nextlvl) {
+        const n = (lnum + 1)
+
+        if (Levels[n]) {
             CTX.fillStyle = "white"
-            CTX.fillText(`Clear! Incoming: Level ${lnum}`, cenX, cenY, 400)
+            CTX.fillText(`Clear! Incoming: Level ${n}`, cenX, cenY, 400)
 
             const alt = findSetting(plrData.Settings, "Alternate Countdown").value
 
@@ -597,6 +599,7 @@ function update() {
             else {
                 countDown(true)
             }
+            
         }
         else {
             CTX.font = "45px PressStart2P"
@@ -715,8 +718,6 @@ for (const c of getSettingClasses()) {
             i.type = ((s.type == "boolean") && "checkbox") || ""
 
             const e = findSetting(plrData.Settings, s.name) || findSetting(Settings, s.name)
-
-            se.querySelector("#sdesc").innerHTML = s.desc
 
             // disregard warnings, e should always exist   
             if (i.type == "checkbox") { 

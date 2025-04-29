@@ -6,14 +6,18 @@ class Level {
     enemyCounts = {}
     enemiesSpawned = {}
 
+    resetSpawned() {
+        for (const nm in this.enemyCounts) {
+            this.enemiesSpawned[nm] = 0
+        }
+    }
+
     constructor(e, p, r) {
         this.enemyCounts = e
         this.powerUps = p
         this.rewards = r
 
-        for (const nm in e) {
-            this.enemiesSpawned[nm] = 0
-        }
+        this.resetSpawned()
     }
 }
 
