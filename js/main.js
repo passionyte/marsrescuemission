@@ -190,7 +190,6 @@ export function restartGame(key) {
     HERO.armor = 0
     HERO.xs = 8
     HERO.auto = false
-
     clearArray(Enemies)
     clearArray(Projectiles)
     clearArray(Powerups)
@@ -215,7 +214,7 @@ globalThis.Music = Music
 
 // Image initiations
 
-const Imgs = {
+export const Imgs = {
     heart: newImg("heart.png"),
     heart_half: newImg("heart_half.png"),
     heart_empty: newImg("heart_empty.png"),
@@ -227,6 +226,7 @@ const Imgs = {
     speed: newImg("speed.png"),
     hardheart: newImg("hardheart.png"),
     hardheart_half: newImg("hardheart_half.png"),
+    boom: newImg("boom.png")
 }
 
 let HeartScale = 4
