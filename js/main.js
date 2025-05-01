@@ -38,7 +38,7 @@ export const HERO = new Player(
         scale: 4
     }
 )
-let lnum = 20
+let lnum = 1
 let level = Levels[lnum]
 let SCORE = 0
 let cdsecs = 0
