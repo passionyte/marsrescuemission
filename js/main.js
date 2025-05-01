@@ -31,14 +31,14 @@ export const HERO = new Player(
         w: 388, 
         h: 299, 
         hp: maxes.hp, 
-        armor: maxes.armor,//0,
+        armor: 0,
         src: "ship.png",
         xs: 8,
         ys: 0,
         scale: 4
     }
 )
-let lnum = 20
+let lnum = 1
 let level = Levels[lnum]
 let SCORE = 0
 let cdsecs = 0
