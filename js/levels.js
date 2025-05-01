@@ -247,6 +247,17 @@ export const Levels = { // First array is enemies, second array is power-ups, th
             hp: 1,
             armor: 1
         }
+    ),
+    18: new Level(
+        {
+            realboss: 1
+        },
+        {
+            hp: 400,
+            armor: 575,
+            auto: 700,
+            xspeed: 650
+        },
     )
 }
 

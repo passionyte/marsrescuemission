@@ -31,14 +31,14 @@ export const HERO = new Player(
         w: 388, 
         h: 299, 
         hp: maxes.hp, 
-        armor: 0,
+        armor: maxes.armor,//0,
         src: "ship.png",
         xs: 8,
         ys: 0,
         scale: 4
     }
 )
-let lnum = 1
+let lnum = 18
 let level = Levels[lnum]
 let SCORE = 0
 let cdsecs = 0
@@ -416,7 +416,8 @@ function update() {
                 src: c.src,
                 score: c.score,
                 bar: (c.bar),
-                barcolor: c.barcolor
+                barcolor: c.barcolor,
+                barattach: (c.barattach)
             }, c.sdata)
             Enemies.push(e)
 
@@ -452,10 +453,19 @@ function update() {
             }
 
             if (e.bar) { // Has large HP Bar (intended for single boss usage)
-                CTX.fillStyle = "darkgray"
-                CTX.fillRect(10, 10, 580, 50)
-                CTX.fillStyle = e.barcolor
-                CTX.fillRect(10, 10, (580 * (e.hp / e.maxhp)), 50)
+                if (!e.barattach) {
+                    CTX.fillStyle = "rgb(40, 40, 40)"
+                    CTX.fillRect(10, 10, 586, 56)
+                    CTX.fillStyle = e.barcolor
+                    CTX.fillRect(13, 13, (580 * (e.hp / e.maxhp)), 50)
+                }
+                else {
+                    CTX.fillStyle = "rgb(40, 40, 40)"
+                    CTX.fillRect((e.left), (e.top - 15), e.width + 4, 16)
+                    CTX.fillStyle = e.barcolor
+                    CTX.fillRect((e.left + 2), (e.top - 13), (e.width * (e.hp / e.maxhp)), 12)
+                }
+
             }
 
             if (checkCollision(HERO, e)) HERO.hp = 0 // Touching the player kills them

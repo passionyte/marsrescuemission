@@ -11,7 +11,10 @@ body {
   }
 
 canvas {
-    background-color: black
+    background-color: black;
+    border-color: rgb(31, 31, 31);
+    border-style: solid;
+    border-width: thick;
 }
 
 @font-face {
