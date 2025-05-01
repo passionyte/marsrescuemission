@@ -220,7 +220,7 @@ export const enemyClasses = {
         score: 1000,
         src: "en_boss.png",
         sdata: {
-            cooldown: 0.01,
+            cooldown: 0.033,
             damage: 1,
             color: "red",
             yspeed: 20,

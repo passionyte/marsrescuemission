@@ -250,13 +250,45 @@ export const Levels = { // First array is enemies, second array is power-ups, th
     ),
     18: new Level(
         {
-            realboss: 1
+            darkblue: 1,
+            purple: 5
         },
         {
             hp: 400,
-            armor: 575,
+            armor: 550,
             auto: 700,
             xspeed: 650
+        },
+        {
+            hp: 2,
+            armor: 2
+        }
+    ),
+    19: new Level(
+        {
+            purple: 3,
+            minion: 7
+        },
+        {
+            hp: 350,
+            armor: 500,
+            auto: 650,
+            xspeed: 600
+        },
+        {
+            hp: 3,
+            armor: 3
+        }
+    ),
+    20: new Level(
+        {
+            realboss: 1
+        },
+        {
+            hp: 250,
+            armor: 500,
+            auto: 550,
+            xspeed: 525
         },
     )
 }
