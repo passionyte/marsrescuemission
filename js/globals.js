@@ -72,26 +72,6 @@ export class Object {
     }
 }
 
-/**
-export class Confetti extends Object {
-    color
-
-    update() {
-        this.position.x += this.velocity.x 
-        this.position.y += this.velocity.y
-    }
-
-    draw() {
-        CTX.fillStyle = this.color
-        CTX.fillRect(this.left, this.top, this.width, this.height)
-    }
-
-    constructor(x, y, scale = 1) {
-        super(x, y, randInt(1, 3), randInt(1, 3), scale)
-        this.color = `rgb(${randInt(50, 255)}, ${randInt(50, 255)}, ${randInt(50, 255)})`
-    }
-}*/
-
 // Some convenient keyboard codes
 export const KEYS = {
     SPACE:32,     

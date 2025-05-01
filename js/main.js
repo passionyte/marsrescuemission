@@ -2,9 +2,9 @@
 
 'use strict'
 
-import { DEBUG, MS_PER_FRAME, CANVAS, CTX, keyClasses, randInt, clearCanvas, newImg, cloneArray, version, clearArray, d, adtLen } from "./globals.js"
+import { DEBUG, MS_PER_FRAME, CANVAS, CTX, keyClasses, randInt, clearCanvas, newImg, cloneArray, version, clearArray, d } from "./globals.js"
 import { Ship, Player, Enemies, enemyClasses, addStat } from "./player.js"
-import { Projectiles, checkCollision } from "./projectile.js"
+import { Projectiles, checkCollision, Confettis, Confetti } from "./projectile.js"
 import { Levels } from "./levels.js"
 import { Powerup, powerupClasses, Powerups } from "./powerup.js"
 import { Settings, changeSetting, findSetting, getSettingClasses, getSettingsFromClass, computeDefault } from "./settings.js"
@@ -38,7 +38,7 @@ export const HERO = new Player(
         scale: 4
     }
 )
-let lnum = 1
+let lnum = 20
 let level = Levels[lnum]
 let SCORE = 0
 let cdsecs = 0
@@ -356,6 +356,18 @@ function results() {
     CTX.fillText(`HI: ${plrData.HighScore}`, cenX, cenY + 280, 200)
 }
 
+function cancel(key) {
+    if (keyClasses.pause.includes(key.keyCode)) {
+        document.removeEventListener("keydown", cancel)
+        document.body.style.filter = ""
+        deg = 0
+        cutscene = false
+        skip = true
+        PAUSED = true
+        results()
+    }
+}
+
 function update() {
     requestAnimationFrame(update)
 
@@ -376,14 +388,26 @@ function update() {
     CTX.drawImage(Imgs.bg, 0, 0, 600, 800, 0, 0, endX, endY)
 
     if (cutscene) { // Why, oh why...
-        // disco and confetti
+        // disco effect
         deg += 3
-        if (deg > 360) deg = 0
+        if (deg > 720) deg = 0
 
         document.body.style.filter = `hue-rotate(${deg}deg)`
 
-        if (randInt(1, 200) == 1) playSound({src: "confetti.mp3", volume: 0.05, loop: false}, true)
+        // creating confetti
+        if (randInt(1, 200) == 1) {
+            playSound({src: "confetti.mp3", volume: 0.05, loop: false}, true)
 
+            for (let i = 0; (i < randInt(3, 9)); i++) {
+                const c = new Confetti(randInt(0, endX), 0)
+                c.velocity.y = randInt(8, 24)
+                c.velocity.x = randInt(-2, 2)
+
+                Confettis.push(c)
+            }
+        }
+
+        // hero, nancy and text
         HERO.update()
         CTX.drawImage(Imgs.nancy, 0, 0, 1000, 1000, (cenX - 200), 50, 400, 400)
 
@@ -395,6 +419,21 @@ function update() {
         CTX.font = "20px PressStart2P"
         CTX.fillStyle = "white"
         CTX.fillText("Press Enter to see results", cenX, (cenY + 250), 400)        
+
+        // handle confetti
+        let ci = 0
+        let fakeConfettis = cloneArray(Confettis)
+        for (const c of fakeConfettis) {
+            if ((NOW - c.time) < (c.life * 1000)) {
+                c.update()
+            }
+            else {
+                Confettis.splice(ci, 1)
+            }
+        }
+        ci = null
+        fakeConfettis = null
+
         return
     }
 
@@ -705,22 +744,8 @@ function update() {
 
                 HERO.velocity.x = 0
                 HERO.position.x = cenX
-
-                function cancel(key) {
-                    if (keyClasses.pause.includes(key.keyCode)) {
-                        document.removeEventListener("keydown", cancel)
-                        document.body.style.filter = ""
-                        deg = 0
-                        cutscene = false
-                        skip = true
-                        PAUSED = true
-                        results()
-                    }
-                }
                 
                 document.addEventListener("keydown", cancel)
-
-                cancel = null
             }
         }
     }
