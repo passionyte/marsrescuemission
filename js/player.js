@@ -4,7 +4,7 @@
 
 import { CTX, newImg, Object, CANVAS, DEBUG, randInt } from "./globals.js"
 import { Projectile, Projectiles } from "./projectile.js"
-import { HERO } from "./main.js"
+import { HERO, Imgs } from "./main.js"
 import { newSound, playSound } from "./sounds.js"
 
 export const Enemies = []
@@ -47,7 +47,7 @@ export const enemyClasses = {
                 "skyblue",
                 "red"
             ],
-            speed: 6,
+            yspeed: 6,
             life: 2
         }
     },
@@ -65,7 +65,7 @@ export const enemyClasses = {
                 "yellow",
                 "orange"
             ],
-            speed: 32,
+            yspeed: 32,
             life: 0.14
         }
     },
@@ -83,7 +83,7 @@ export const enemyClasses = {
                 "pink",
                 "purple"
             ],
-            speed: 10,
+            yspeed: 10,
             life: 1
         }
     },
@@ -98,7 +98,7 @@ export const enemyClasses = {
             cooldown: 0.4,
             damage: 1,
             color: "red",
-            speed: 12,
+            yspeed: 12,
             life: 0.8
         }
     },
@@ -116,7 +116,7 @@ export const enemyClasses = {
             cooldown: 0.15,
             damage: 2,
             color: "red",
-            speed: 20,
+            yspeed: 20,
             life: 0.6,
             spreadmin: 0,
             spreadmax: 100
@@ -133,7 +133,7 @@ export const enemyClasses = {
             cooldown: 1.5,
             damage: 1,
             color: "lime",
-            speed: 14,
+            yspeed: 14,
             life: 1,
             bullets: 3,
             spreadmin: 0,
@@ -163,7 +163,7 @@ export const enemyClasses = {
                 "red",
                 "yellow"
             ],
-            speed: 22,
+            yspeed: 22,
             life: 0.5,
             bullets: 5,
             spreadmin: -100,
@@ -182,7 +182,7 @@ export const enemyClasses = {
             cooldown: 0.12,
             damage: 1,
             color: "blue",
-            speed: 10,
+            yspeed: 10,
             life: 1,
             spreadmin: 0,
             spreadmax: 100
@@ -196,15 +196,41 @@ export const enemyClasses = {
         xs: 2,
         ys: -1,
         scale: 1.2,
+        bar: true,
+        barcolor: "purple",
+        barattach: true,
         sdata: {
             cooldown: 3.5,
             damage: 5,
             color: "purple",
-            speed: 40,
-            life: 0.33  ,
+            yspeed: 40,
+            life: 0.33,
         },
         score: 3
-    }
+    },
+    realboss: {
+        w: 123,
+        h: 57,
+        hp: 30,
+        xs: 3,
+        ys: 0,
+        scale: 0.75,
+        bar: true,
+        barcolor: "red",
+        score: 1000,
+        src: "en_boss.png",
+        sdata: {
+            cooldown: 0.033,
+            damage: 1,
+            color: "red",
+            yspeed: 20,
+            xmin: -20,
+            xmax: 20,
+            life: 0.5,
+            spreadmin: 0,
+            spreadmax: 100
+        }
+    },
 }
 
 export class Ship extends Object {
@@ -234,7 +260,15 @@ export class Ship extends Object {
             const p = new Projectile((this.position.x + spread), (this.position.y + yo), 6, 12, s.life, c, s.damage, (i == 0))
 
             if (i == 0) playSound(p.sound)
-            p.velocity.y = ((s.inverted) && -s.speed) || s.speed
+            p.velocity.y = ((s.inverted) && -s.yspeed) || s.yspeed
+
+            if (s.xspeed) {
+                p.velocity.x = ((s.inverted) && -s.xspeed || 0) || s.xspeed || 0
+            }
+            else if (s.xmin) {
+                p.velocity.x = randInt(s.xmin, s.xmax)
+            }
+            
             p.player = fromPlr
             Projectiles.push(p)
         }
@@ -288,6 +322,7 @@ export class Ship extends Object {
 
         this.bar = (d.bar)
         this.barcolor = d.barcolor
+        this.barattach = (d.barattach)
 
         this.scale = d.scale
         this.img = newImg(d.src || `en_${type}.png`)
@@ -297,7 +332,7 @@ export class Ship extends Object {
 export class Player extends Ship {
     constructor(d) {
         const sd = { // Shot data
-            speed: 12,
+            yspeed: 12,
             cooldown: 0.1,
             life: 1,
             inverted: true,

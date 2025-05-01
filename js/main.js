@@ -47,6 +47,9 @@ let PAUSED = false
 let sudoPAUSED = false
 let FOCUSED = true
 let hardcore = false
+let cutscene = false
+let skip = false
+let deg = 0
 
 // Player Data Handling 
 
@@ -97,7 +100,7 @@ function input() {
         downKeys[key] = true
         downClasses[getClassFromKey(key)] = true
 
-        if (!FOCUSED) return
+        if (!FOCUSED || cutscene) return
 
         if (!PAUSED) {
             if (!sudoPAUSED) { // Game related binds only
@@ -179,6 +182,9 @@ export function restartGame(key) {
 
     level.resetSpawned()
 
+    cutscene = false
+    skip = false
+
     hardcore = (findSetting(plrData.Settings, "Hardcore").value)
 
     // Reset hero
@@ -190,7 +196,6 @@ export function restartGame(key) {
     HERO.armor = 0
     HERO.xs = 8
     HERO.auto = false
-
     clearArray(Enemies)
     clearArray(Projectiles)
     clearArray(Powerups)
@@ -210,12 +215,13 @@ newSound("break.mp3")
 newSound("pew.mp3")
 newSound("pop.wav")
 newSound("powerup.mp3")
+newSound("confetti.mp3")
 
 globalThis.Music = Music
 
 // Image initiations
 
-const Imgs = {
+export const Imgs = {
     heart: newImg("heart.png"),
     heart_half: newImg("heart_half.png"),
     heart_empty: newImg("heart_empty.png"),
@@ -227,6 +233,8 @@ const Imgs = {
     speed: newImg("speed.png"),
     hardheart: newImg("hardheart.png"),
     hardheart_half: newImg("hardheart_half.png"),
+    boom: newImg("boom.png"),
+    nancy: newImg("nancy.png")
 }
 
 let HeartScale = 4
@@ -306,6 +314,48 @@ function drawArmor(xo = 0, yo = 0) {
     }
 }
 
+function results() {
+    clearCanvas()
+
+    CTX.font = "45px PressStart2P"
+    CTX.fillStyle = "green"
+    CTX.fillText("You win!", cenX, cenY, 200)
+
+    CTX.font = "40px PressStart2P"
+
+    if (HERO.hp == maxes.hp) {
+        CTX.fillText("Perfect!", cenX, cenY + 100, 200)
+    }
+    else {
+        CTX.fillStyle = "white"
+        CTX.fillText("HP remaining:", cenX, cenY + 80, 200)
+
+        drawHP(cenX - 85, -250)
+    }
+
+    CTX.fillStyle = "white"
+    CTX.fillText(`Score: ${SCORE}`, cenX, cenY + 220, 200)
+
+    CTX.font = "20px PressStart2P"
+    CTX.fillText("Press Space to restart", cenX, endY - 50, 400)
+
+    document.addEventListener("keydown", restartGame)
+
+    if (SCORE > plrData.HighScore) {
+        plrData.HighScore = SCORE
+        saveData()
+
+        CTX.fillStyle = "yellow"
+        CTX.font = "20px PressStart2P"
+        CTX.fillText("New High Score!", cenX, cenY + 250, 400)
+    }
+
+    CTX.fillStyle = "white"
+    CTX.font = "15px PressStart2P"
+
+    CTX.fillText(`HI: ${plrData.HighScore}`, cenX, cenY + 280, 200)
+}
+
 function update() {
     requestAnimationFrame(update)
 
@@ -324,6 +374,29 @@ function update() {
 
     // draw background
     CTX.drawImage(Imgs.bg, 0, 0, 600, 800, 0, 0, endX, endY)
+
+    if (cutscene) { // Why, oh why...
+        // disco and confetti
+        deg += 3
+        if (deg > 360) deg = 0
+
+        document.body.style.filter = `hue-rotate(${deg}deg)`
+
+        if (randInt(1, 200) == 1) playSound({src: "confetti.mp3", volume: 0.05, loop: false}, true)
+
+        HERO.update()
+        CTX.drawImage(Imgs.nancy, 0, 0, 1000, 1000, (cenX - 200), 50, 400, 400)
+
+        CTX.textAlign = "center"
+        CTX.font = "30px PressStart2P"
+        CTX.fillStyle = "green"
+        CTX.fillText("You rescued Nancy! Congratulations!", cenX, (cenY + 150), 600)
+
+        CTX.font = "20px PressStart2P"
+        CTX.fillStyle = "white"
+        CTX.fillText("Press Enter to see results", cenX, (cenY + 250), 400)        
+        return
+    }
 
     if (sudoPAUSED) {
         CTX.textAlign = "center"
@@ -416,7 +489,8 @@ function update() {
                 src: c.src,
                 score: c.score,
                 bar: (c.bar),
-                barcolor: c.barcolor
+                barcolor: c.barcolor,
+                barattach: (c.barattach)
             }, c.sdata)
             Enemies.push(e)
 
@@ -452,10 +526,19 @@ function update() {
             }
 
             if (e.bar) { // Has large HP Bar (intended for single boss usage)
-                CTX.fillStyle = "darkgray"
-                CTX.fillRect(10, 10, 580, 50)
-                CTX.fillStyle = e.barcolor
-                CTX.fillRect(10, 10, (580 * (e.hp / e.maxhp)), 50)
+                if (!e.barattach) {
+                    CTX.fillStyle = "rgb(40, 40, 40)"
+                    CTX.fillRect(10, 10, 586, 56)
+                    CTX.fillStyle = e.barcolor
+                    CTX.fillRect(13, 13, (580 * (e.hp / e.maxhp)), 50)
+                }
+                else {
+                    CTX.fillStyle = "rgb(40, 40, 40)"
+                    CTX.fillRect((e.left), (e.top - 15), e.width + 4, 16)
+                    CTX.fillStyle = e.barcolor
+                    CTX.fillRect((e.left + 2), (e.top - 13), (e.width * (e.hp / e.maxhp)), 12)
+                }
+
             }
 
             if (checkCollision(HERO, e)) HERO.hp = 0 // Touching the player kills them
@@ -616,43 +699,29 @@ function update() {
             
         }
         else {
-            CTX.font = "45px PressStart2P"
-            CTX.fillStyle = "green"
-            CTX.fillText("You win!", cenX, cenY, 200)
+            if (!cutscene && !skip) {
+                PAUSED = false
+                cutscene = true
 
-            CTX.font = "40px PressStart2P"
+                HERO.velocity.x = 0
+                HERO.position.x = cenX
 
-            if (HERO.hp == maxes.hp) {
-                CTX.fillText("Perfect!", cenX, cenY + 100, 200)
+                function cancel(key) {
+                    if (keyClasses.pause.includes(key.keyCode)) {
+                        document.removeEventListener("keydown", cancel)
+                        document.body.style.filter = ""
+                        deg = 0
+                        cutscene = false
+                        skip = true
+                        PAUSED = true
+                        results()
+                    }
+                }
+                
+                document.addEventListener("keydown", cancel)
+
+                cancel = null
             }
-            else {
-                CTX.fillStyle = "white"
-                CTX.fillText("HP remaining:", cenX, cenY + 80, 200)
-
-                drawHP(cenX - 85, -250)
-            }
-
-            CTX.fillStyle = "white"
-            CTX.fillText(`Score: ${SCORE}`, cenX, cenY + 220, 200)
-
-            CTX.font = "20px PressStart2P"
-            CTX.fillText("Press Space to restart", cenX, endY - 50, 400)
-
-            document.addEventListener("keydown", restartGame)
-
-            if (SCORE > plrData.HighScore) {
-                plrData.HighScore = SCORE
-                saveData()
-
-                CTX.fillStyle = "yellow"
-                CTX.font = "20px PressStart2P"
-                CTX.fillText("New High Score!", cenX, cenY + 250, 400)
-            }
-
-            CTX.fillStyle = "white"
-            CTX.font = "15px PressStart2P"
-
-            CTX.fillText(`HI: ${plrData.HighScore}`, cenX, cenY + 280, 200)
         }
     }
     

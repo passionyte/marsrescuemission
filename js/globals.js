@@ -11,7 +11,7 @@ export const MS_PER_FRAME = (1000 / FPS)
 
 const useRaw = (document.URL.includes("passionyte.github.io/marsrescuemission"))
 
-export const version = `1.8.6${((!useRaw) && " [DEV]") || ""}` 
+export const version = `1.9${((!useRaw) && " [DEV]") || ""}` 
 
 if (!useRaw) document.title = `[DEV] ${document.title}`
 
@@ -72,9 +72,29 @@ export class Object {
     }
 }
 
+/**
+export class Confetti extends Object {
+    color
+
+    update() {
+        this.position.x += this.velocity.x 
+        this.position.y += this.velocity.y
+    }
+
+    draw() {
+        CTX.fillStyle = this.color
+        CTX.fillRect(this.left, this.top, this.width, this.height)
+    }
+
+    constructor(x, y, scale = 1) {
+        super(x, y, randInt(1, 3), randInt(1, 3), scale)
+        this.color = `rgb(${randInt(50, 255)}, ${randInt(50, 255)}, ${randInt(50, 255)})`
+    }
+}*/
+
 // Some convenient keyboard codes
 export const KEYS = {
-    SPACE:32,
+    SPACE:32,     
     UP_ARROW:38,
     LEFT_ARROW:37,
     DOWN_ARROW:40,
@@ -88,7 +108,7 @@ export const KEYS = {
    };
 
 export const keyClasses = {
-    shoot: [KEYS.SPACE, KEYS.UP_ARROW],
+    shoot: [KEYS.W, KEYS.SPACE, KEYS.UP_ARROW],
     left: [KEYS.A, KEYS.LEFT_ARROW],
     right: [KEYS.D, KEYS.RIGHT_ARROW],
     pause: [KEYS.EQUALS, KEYS.ENTER]
